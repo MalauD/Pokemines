@@ -39,6 +39,7 @@
         "@emotion/styled": "^11.11.0",
         "@mui/icons-material": "^5.15.12",
         "@mui/material": "^5.15.12",
+        "@mui/x-data-grid": "^6.19.6",
         "axios": "^1.6.7",
         "prop-types": "^15.8.1",
         "query-string": "^9.0.0",

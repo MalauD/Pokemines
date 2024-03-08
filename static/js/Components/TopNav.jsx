@@ -30,7 +30,7 @@ export default function DrawerAppBar(props) {
 
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-            <img src={'/android-chrome-192x192.png'} alt="Logo" />
+            <img src={'/android-chrome-512x512.png'} alt="Logo" style={{ height: 192 }} />
             <Divider />
             <List>
                 {navItemsDrawer.map((item) => (
@@ -72,7 +72,7 @@ export default function DrawerAppBar(props) {
                             src={'/android-chrome-192x192.png'}
                             alt="Logo"
                             style={{
-                                height: 70,
+                                height: 55,
                                 marginTop: 5,
                                 marginBottom: 5,
                                 marginRight: 10,
@@ -92,8 +92,8 @@ export default function DrawerAppBar(props) {
                     </Box>
                     <IconButton
                         sx={{
-                            height: 70,
-                            width: 70,
+                            height: 55,
+                            width: 55,
                             display: { xs: 'none', sm: 'none', md: 'flex' },
                             alignItems: 'center',
                         }}

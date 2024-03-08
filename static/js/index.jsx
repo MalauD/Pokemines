@@ -7,6 +7,7 @@ import '../index.css';
 
 import TopNav from './Components/TopNav';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Accueil from './Pages/Accueil';
 
 Axios.defaults.withCredentials = true;
 
@@ -24,9 +25,10 @@ const theme = createTheme({
 function App() {
     return (
         <ThemeProvider theme={theme}>
+            <TopNav />
             <Router>
                 <Routes>
-                    <Route path="/" element={<TopNav />} />
+                    <Route path="/" element={<Accueil />} />
                 </Routes>
             </Router>
         </ThemeProvider>
