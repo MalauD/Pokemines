@@ -50,7 +50,7 @@ export default function DrawerAppBar(props) {
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar component="nav">
-                <Toolbar>
+                <Toolbar sx={{ color: '#fff' }}>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"

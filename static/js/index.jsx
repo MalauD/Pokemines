@@ -6,16 +6,30 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import '../index.css';
 
 import TopNav from './Components/TopNav';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 Axios.defaults.withCredentials = true;
 
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#FD8625',
+        },
+        secondary: {
+            main: '#4C751E',
+        },
+    },
+});
+
 function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<TopNav />} />
-            </Routes>
-        </Router>
+        <ThemeProvider theme={theme}>
+            <Router>
+                <Routes>
+                    <Route path="/" element={<TopNav />} />
+                </Routes>
+            </Router>
+        </ThemeProvider>
     );
 }
 
