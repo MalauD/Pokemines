@@ -13,8 +13,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import SearchAccount from './Search/SearchAccount';
+import { AccountCircle } from '@mui/icons-material';
 
 const drawerWidth = 240;
+const navItemsDrawer = ['Accueil', 'Leaderboard', 'Collection', 'Mon Compte'];
 const navItems = ['Accueil', 'Leaderboard', 'Collection'];
 
 export default function DrawerAppBar(props) {
@@ -30,7 +33,7 @@ export default function DrawerAppBar(props) {
             <img src={'/android-chrome-192x192.png'} alt="Logo" />
             <Divider />
             <List>
-                {navItems.map((item) => (
+                {navItemsDrawer.map((item) => (
                     <ListItem key={item} disablePadding>
                         <ListItemButton sx={{ textAlign: 'center' }}>
                             <ListItemText primary={item} />
@@ -53,22 +56,52 @@ export default function DrawerAppBar(props) {
                         aria-label="open drawer"
                         edge="start"
                         onClick={handleDrawerToggle}
-                        sx={{ mr: 2, display: { sm: 'none' } }}
+                        sx={{ mr: 0, display: { md: 'none' } }}
                     >
                         <MenuIcon />
                     </IconButton>
-                    <img
-                        src={'/android-chrome-192x192.png'}
-                        alt="Logo"
-                        style={{ height: 80, paddingTop: 5, paddingBottom: 5, paddingRight: 10 }}
-                    />
-                    <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                    <Box
+                        sx={{
+                            display: { xs: 'flex', md: 'flex' },
+                            height: '100%',
+                        }}
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <img
+                            src={'/android-chrome-192x192.png'}
+                            alt="Logo"
+                            style={{
+                                height: 70,
+                                marginTop: 5,
+                                marginBottom: 5,
+                                marginRight: 10,
+                            }}
+                        />
+                    </Box>
+
+                    <Box sx={{ display: { xs: 'none', md: 'block' } }}>
                         {navItems.map((item) => (
                             <Button key={item} sx={{ color: '#fff' }}>
                                 {item}
                             </Button>
                         ))}
                     </Box>
+                    <Box sx={{ marginLeft: 'auto' }}>
+                        <SearchAccount />
+                    </Box>
+                    <IconButton
+                        sx={{
+                            height: 70,
+                            width: 70,
+                            display: { xs: 'none', sm: 'none', md: 'flex' },
+                            alignItems: 'center',
+                        }}
+                        size="large"
+                        color="inherit"
+                    >
+                        <AccountCircle fontSize="large" />
+                    </IconButton>
                 </Toolbar>
             </AppBar>
             <nav>
@@ -81,7 +114,7 @@ export default function DrawerAppBar(props) {
                         keepMounted: true, // Better open performance on mobile.
                     }}
                     sx={{
-                        display: { xs: 'block', sm: 'none' },
+                        display: { lg: 'none', md: 'block' },
                         '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
                     }}
                 >
