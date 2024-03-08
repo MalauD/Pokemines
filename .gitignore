@@ -1,1 +1,6 @@
 /target
+/node_modules/**
+/static/Dist
+Settings.toml
+.env
+.kube/secrets.yaml

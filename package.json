@@ -1,0 +1,51 @@
+{
+    "name": "pokemines",
+    "version": "1.0.0",
+    "description": "",
+    "private": true,
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@babel/core": "^7.24.0",
+        "@babel/preset-env": "^7.24.0",
+        "@babel/preset-react": "^7.23.3",
+        "@svgr/webpack": "^8.1.0",
+        "autoprefixer": "^10.4.18",
+        "babel-loader": "^9.1.3",
+        "css-loader": "^6.10.0",
+        "eslint": "^8.57.0",
+        "eslint-config-airbnb": "^19.0.4",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-jsx-a11y": "^6.8.0",
+        "eslint-plugin-react": "^7.34.0",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "postcss": "^8.4.35",
+        "postcss-loader": "^8.1.1",
+        "postcss-preset-env": "^9.5.0",
+        "sass": "^1.71.1",
+        "sass-loader": "^14.1.1",
+        "style-loader": "^3.3.4",
+        "webpack": "^5.90.3",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^5.0.2"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.11.4",
+        "@emotion/styled": "^11.11.0",
+        "@mui/icons-material": "^5.15.12",
+        "@mui/material": "^5.15.12",
+        "axios": "^1.6.7",
+        "prop-types": "^15.8.1",
+        "query-string": "^9.0.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-draggable": "^4.4.6",
+        "react-hook-form": "^7.51.0",
+        "react-router-dom": "^6.22.3"
+    }
+}
