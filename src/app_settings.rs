@@ -8,6 +8,7 @@ fn default_s3_region() -> String {
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct AppSettings {
+    pub admin_password: String,
     pub s3_url: String,
     #[serde(default = "default_s3_region")]
     pub s3_region: String,

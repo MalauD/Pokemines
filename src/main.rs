@@ -1,6 +1,7 @@
 use crate::{
     api::config_api,
     app_settings::{get_settings, AppSettings},
+    db::get_mongo,
 };
 use actix_files::{Files, NamedFile};
 use actix_identity::IdentityMiddleware;
@@ -18,7 +19,10 @@ use log::info;
 
 mod api;
 mod app_settings;
+mod db;
 mod handlers;
+mod models;
+mod tools;
 
 async fn index(_req: HttpRequest) -> Result<NamedFile> {
     Ok(NamedFile::open("./static/index.html")?)
@@ -42,8 +46,10 @@ async fn main() -> std::io::Result<()> {
     };
 
     env_logger::init();
-    info!(target:"mop-rs::main","Starting MopRs");
+    info!(target:"Pokemines::main","Starting Pokemines");
     const PORT: i32 = 8080;
+
+    let _db = get_mongo(Some(config.mongo_url.clone())).await;
 
     HttpServer::new(move || {
         App::new()
