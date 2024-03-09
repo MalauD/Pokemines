@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import '../index.css';
+import LexendFont from '../fonts/Lexend-VariableFont_wght.ttf';
 
 import TopNav from './Components/TopNav';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -18,6 +19,19 @@ const theme = createTheme({
         },
         secondary: {
             main: '#4C751E',
+        },
+    },
+    typography: {
+        fontFamily: 'Lexend, sans-serif',
+    },
+    components: {
+        MuiCssBaseline: {
+            styleOverrides: `
+                @font-face {
+                    font-family: 'Lexend';
+                    src: url(${LexendFont}) format('truetype');
+                }
+            `,
         },
     },
 });
