@@ -38,16 +38,21 @@ function Login() {
     return (
         <Box
             sx={{
-                marginTop: 8,
+                marginTop: '80px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
             }}
         >
-            <Typography component="h1" variant="h5">
-                Se connecter
-            </Typography>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Box
+                component="form"
+                onSubmit={handleSubmit}
+                noValidate
+                sx={{ pl: '8vw', pr: '8vw', pt: '4vh', pb: '4vh' }}
+            >
+                <Typography component="h1" variant="h5" sx={{ mb: 1 }}>
+                    Connexion
+                </Typography>
                 <TextField
                     margin="normal"
                     required

@@ -41,7 +41,7 @@ function ChangePassword() {
             }}
         >
             <Paper sx={{ pl: '8vw', pr: '8vw', pt: '4vh', pb: '4vh' }}>
-                <Typography component="h1" variant="h4" sx={{ mb: 5 }} align="center">
+                <Typography component="h1" variant="h5" sx={{ mb: 2 }} align="center">
                     Changer de mot de passe
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
