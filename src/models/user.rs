@@ -61,6 +61,34 @@ pub struct User {
     pub admin: bool,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct PublicUser {
+    #[serde(
+        rename = "_id",
+        skip_serializing_if = "Option::is_none",
+        serialize_with = "serialize_option_oid_hex"
+    )]
+    id: Option<ObjectId>,
+    pub mail: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub promo: Option<Promo>,
+    pub admin: bool,
+}
+
+impl From<User> for PublicUser {
+    fn from(user: User) -> Self {
+        PublicUser {
+            id: user.id,
+            mail: user.mail,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            promo: user.promo,
+            admin: user.admin,
+        }
+    }
+}
+
 fn serialize_option_oid_hex<S>(x: &Option<ObjectId>, s: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,

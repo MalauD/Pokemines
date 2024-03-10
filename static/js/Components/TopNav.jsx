@@ -11,26 +11,42 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import SearchAccount from './Search/SearchAccount';
 import { AccountCircle } from '@mui/icons-material';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import SearchAccount from './Search/SearchAccount';
+import useConnected from '../Hooks/useConnected';
+import useAdmin from '../Hooks/useAdmin';
 
 const drawerWidth = 240;
-const navItemsDrawer = ['Accueil', 'Leaderboard', 'Collection', 'Mon Compte'];
-const navItems = ['Accueil', 'Leaderboard', 'Collection'];
+
+const adminNavItems = ['Accueil', 'Leaderboard', 'Collection', 'Admin', 'Mon Compte'];
+const disconnectedNavItems = ['Accueil', 'Leaderboard', 'Connexion'];
 
 export default function DrawerAppBar(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
+    const isConnected = useConnected();
+    const isAdmin = useAdmin();
+    const navigate = useNavigate();
 
     const handleDrawerToggle = () => {
         setMobileOpen((prevState) => !prevState);
     };
 
+    // eslint-disable-next-line no-nested-ternary
+    const navItems = isConnected
+        ? isAdmin
+            ? adminNavItems.filter((item) => item !== 'Mon Compte')
+            : adminNavItems.filter((item) => item !== 'Admin' && item !== 'Mon Compte')
+        : disconnectedNavItems;
+
+    const navItemsDrawer = [...navItems, 'Mon Compte'];
+
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-            <img src={'/android-chrome-512x512.png'} alt="Logo" style={{ height: 192 }} />
+            <img src="/android-chrome-512x512.png" alt="Logo" style={{ height: 192 }} />
             <Divider />
             <List>
                 {navItemsDrawer.map((item) => (
@@ -69,7 +85,7 @@ export default function DrawerAppBar(props) {
                         justifyContent="center"
                     >
                         <img
-                            src={'/android-chrome-192x192.png'}
+                            src="/android-chrome-192x192.png"
                             alt="Logo"
                             style={{
                                 height: 55,
@@ -82,26 +98,35 @@ export default function DrawerAppBar(props) {
 
                     <Box sx={{ display: { xs: 'none', md: 'block' } }}>
                         {navItems.map((item) => (
-                            <Button key={item} sx={{ color: '#fff' }}>
+                            <Button
+                                key={item}
+                                sx={{ color: '#fff' }}
+                                onClick={() => navigate(`/${item}`)}
+                            >
                                 {item}
                             </Button>
                         ))}
                     </Box>
-                    <Box sx={{ marginLeft: 'auto' }}>
-                        <SearchAccount />
-                    </Box>
-                    <IconButton
-                        sx={{
-                            height: 55,
-                            width: 55,
-                            display: { xs: 'none', sm: 'none', md: 'flex' },
-                            alignItems: 'center',
-                        }}
-                        size="large"
-                        color="inherit"
-                    >
-                        <AccountCircle fontSize="large" />
-                    </IconButton>
+                    {isConnected && (
+                        <>
+                            <Box sx={{ marginLeft: 'auto' }}>
+                                <SearchAccount />
+                            </Box>
+                            <IconButton
+                                sx={{
+                                    height: 55,
+                                    width: 55,
+                                    display: { xs: 'none', sm: 'none', md: 'flex' },
+                                    alignItems: 'center',
+                                }}
+                                size="large"
+                                color="inherit"
+                                onClick={() => navigate('/Mon Compte')}
+                            >
+                                <AccountCircle fontSize="large" />
+                            </IconButton>
+                        </>
+                    )}
                 </Toolbar>
             </AppBar>
             <nav>
@@ -124,3 +149,7 @@ export default function DrawerAppBar(props) {
         </Box>
     );
 }
+
+DrawerAppBar.propTypes = {
+    window: PropTypes.func.isRequired,
+};

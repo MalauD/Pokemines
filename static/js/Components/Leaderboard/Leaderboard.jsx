@@ -42,7 +42,7 @@ const rows = [
 
 export default function Leaderboard() {
     return (
-        <Box sx={{ height: 400, margin: 5, marginTop: 10 }}>
+        <Box sx={{ height: 400, margin: 5, marginTop: 0 }}>
             <DataGrid
                 rows={rows}
                 columns={columns}

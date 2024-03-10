@@ -19,6 +19,7 @@
         "jsx-a11y/media-has-caption": "off",
         "jsx-a11y/no-noninteractive-element-interactions": "off",
         "camelcase": "off",
-        "react/prefer-stateless-function": "off"
+        "react/prefer-stateless-function": "off",
+        "import/no-cycle": "off"
     }
 }

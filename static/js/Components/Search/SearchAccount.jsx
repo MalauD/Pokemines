@@ -54,7 +54,10 @@ export default function SearchAccount() {
             </SearchIconWrapper>
             <StyledInputBase
                 placeholder="Cherche un mineur"
-                inputProps={{ 'aria-label': 'search' }}
+                inputProps={{
+                    'aria-label': 'search',
+                    type: 'search',
+                }}
             />
         </Search>
     );

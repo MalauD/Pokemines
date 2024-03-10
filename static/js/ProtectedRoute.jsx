@@ -1,54 +1,23 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import Axios from 'axios';
-import { useHistory, withRouter } from 'react-router-dom';
-import { AddMyAccount as AddMyAccountRedux } from './Actions/Action';
+import { useNavigate } from 'react-router-dom';
+import useConnected from './Hooks/useConnected';
 
-function mapDispatchToProps(dispatch) {
-    return {
-        AddMyAccount: (Account) => dispatch(AddMyAccountRedux(Account)),
-    };
-}
+function ProtectedRoute({ Component, ...props }) {
+    const navigate = useNavigate();
+    const isConnected = useConnected();
 
-const mapStateToProps = (state) => ({
-    IsConnected: state.UserAccountReducer?.Account !== undefined,
-});
-
-const isInAuthentification = (location) =>
-    location.pathname.startsWith('/Login') || location.pathname.startsWith('/Register');
-
-function ProtectedRouteConnected({ Component, IsConnected, AddMyAccount, ...props }) {
-    const history = useHistory();
     useEffect(() => {
-        if (!IsConnected) {
-            Axios.get('/api/me')
-                .then((res) => {
-                    if (res.data.Account) {
-                        AddMyAccount(res.data.Account);
-                    }
-                })
-                .catch(() => {
-                    if (!isInAuthentification(history.location)) {
-                        if (history.location.pathname === '/') {
-                            history.push('/Login');
-                        } else {
-                            history.push(`/Login?follow=${history.location.pathname}`);
-                        }
-                    }
-                });
+        if (!isConnected) {
+            navigate('/Connexion');
         }
-    }, []);
+    }, [isConnected]);
 
-    const BoundComponent = withRouter(Component);
-
-    return IsConnected ? <BoundComponent {...props} /> : null;
+    return isConnected ? <Component {...props} /> : null;
 }
 
-ProtectedRouteConnected.propTypes = {
-    IsConnected: PropTypes.bool.isRequired,
+ProtectedRoute.propTypes = {
     Component: PropTypes.oneOfType([PropTypes.element, PropTypes.func]).isRequired,
-    AddMyAccount: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProtectedRouteConnected);
+export default ProtectedRoute;
