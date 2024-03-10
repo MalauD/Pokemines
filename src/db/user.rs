@@ -42,4 +42,11 @@ impl MongoClient {
         .await?;
         Ok(())
     }
+
+    pub async fn append_card(&self, user_id: &ObjectId, card: &ObjectId) -> Result<()> {
+        let coll = self._database.collection::<User>("User");
+        coll.update_one(doc! {"_id": user_id}, doc! {"$push": {"cards": card}}, None)
+            .await?;
+        Ok(())
+    }
 }

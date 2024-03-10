@@ -8,9 +8,11 @@ use argon2::{
 };
 use futures::Future;
 use mongodb::bson::oid::ObjectId;
-use serde::{Deserialize, Serialize, Serializer};
+use serde::{Deserialize, Serialize};
 
 use crate::{db::get_mongo, tools::UserError};
+
+use super::serialize_option_oid_hex;
 
 #[derive(Debug, Deserialize, Serialize, Clone, Copy)]
 pub enum Promo {
@@ -59,6 +61,7 @@ pub struct User {
     pub credential: String,
     pub promo: Option<Promo>,
     pub admin: bool,
+    pub cards: Vec<ObjectId>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -74,6 +77,7 @@ pub struct PublicUser {
     pub last_name: String,
     pub promo: Option<Promo>,
     pub admin: bool,
+    pub cards: Vec<ObjectId>,
 }
 
 impl From<User> for PublicUser {
@@ -85,17 +89,8 @@ impl From<User> for PublicUser {
             last_name: user.last_name,
             promo: user.promo,
             admin: user.admin,
+            cards: user.cards,
         }
-    }
-}
-
-fn serialize_option_oid_hex<S>(x: &Option<ObjectId>, s: S) -> Result<S::Ok, S::Error>
-where
-    S: Serializer,
-{
-    match x {
-        Some(o) => s.serialize_str(&o.to_hex()),
-        None => s.serialize_none(),
     }
 }
 
@@ -189,6 +184,7 @@ impl From<CreateUserReq> for User {
             credential: hash,
             promo: req.promo,
             admin: false,
+            cards: vec![],
         }
     }
 }

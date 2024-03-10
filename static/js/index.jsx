@@ -89,7 +89,10 @@ function App() {
                             <Route path="/" element={<Accueil />} />
                             <Route path="/connexion" element={<Login />} />
                             <Route path="/moi" element={<ProtectedRoute Component={MyAccount} />} />
-                            <Route path="/changermdp" element={<ChangePassword />} />
+                            <Route
+                                path="/changermdp"
+                                element={<ProtectedRoute Component={ChangePassword} />}
+                            />
                         </Routes>
                     </Box>
                 </Router>

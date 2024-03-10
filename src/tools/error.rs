@@ -1,7 +1,6 @@
 use actix_web::{http::StatusCode, HttpResponse, HttpResponseBuilder, ResponseError};
 use thiserror::Error;
 
-
 #[derive(Error, Debug)]
 pub enum UserError {
     #[error("MismatchingCredential: cannot login")]
@@ -18,6 +17,30 @@ impl ResponseError for UserError {
             Self::MismatchingCredential => StatusCode::UNAUTHORIZED,
             Self::AuthenticationError => StatusCode::INTERNAL_SERVER_ERROR,
             Self::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+
+    fn error_response(&self) -> HttpResponse {
+        HttpResponseBuilder::new(self.status_code()).finish()
+    }
+}
+
+#[derive(Error, Debug)]
+pub enum CardError {
+    #[error("DatabaseError: something went wrong with mongodb")]
+    DatabaseError(#[from] mongodb::error::Error),
+    #[error("Unauthorized: you are not allowed to perform this action")]
+    Unauthorized,
+    #[error("S3Error: something went wrong with s3")]
+    S3Error(#[from] s3::error::S3Error),
+}
+
+impl ResponseError for CardError {
+    fn status_code(&self) -> StatusCode {
+        match *self {
+            Self::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::Unauthorized => StatusCode::UNAUTHORIZED,
+            Self::S3Error(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 

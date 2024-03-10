@@ -2,6 +2,7 @@ use crate::{
     api::config_api,
     app_settings::{get_settings, AppSettings},
     db::get_mongo,
+    s3::get_s3,
 };
 use actix_files::{Files, NamedFile};
 use actix_identity::IdentityMiddleware;
@@ -22,6 +23,7 @@ mod app_settings;
 mod db;
 mod handlers;
 mod models;
+mod s3;
 mod tools;
 
 async fn index(_req: HttpRequest) -> Result<NamedFile> {
@@ -50,6 +52,13 @@ async fn main() -> std::io::Result<()> {
     const PORT: i32 = 8080;
 
     let _db = get_mongo(Some(config.mongo_url.clone())).await;
+
+    let _ = get_s3(Some(s3::S3Config {
+        s3_url: config.s3_url.clone(),
+        s3_region: config.s3_region.clone(),
+        s3_bucket: config.s3_bucket.clone(),
+    }))
+    .await;
 
     HttpServer::new(move || {
         App::new()
