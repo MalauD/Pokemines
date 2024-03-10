@@ -87,13 +87,9 @@ function App() {
                     <Box component="main" sx={{ paddingTop: 10 }}>
                         <Routes>
                             <Route path="/" element={<Accueil />} />
-                            <Route path="/Accueil" element={<Accueil />} />
-                            <Route path="/Connexion" element={<Login />} />
-                            <Route
-                                path="/Mon Compte"
-                                element={<ProtectedRoute Component={MyAccount} />}
-                            />
-                            <Route path="/ChangerMdp" element={<ChangePassword />} />
+                            <Route path="/connexion" element={<Login />} />
+                            <Route path="/moi" element={<ProtectedRoute Component={MyAccount} />} />
+                            <Route path="/changermdp" element={<ChangePassword />} />
                         </Routes>
                     </Box>
                 </Router>

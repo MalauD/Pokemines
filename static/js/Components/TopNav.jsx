@@ -24,6 +24,15 @@ const drawerWidth = 240;
 const adminNavItems = ['Accueil', 'Leaderboard', 'Collection', 'Admin', 'Mon Compte'];
 const disconnectedNavItems = ['Accueil', 'Leaderboard', 'Connexion'];
 
+const pathLookup = {
+    Accueil: '/',
+    Leaderboard: '/leaderboard',
+    Collection: '/collection',
+    Admin: '/admin',
+    'Mon Compte': '/moi',
+    Connexion: '/connexion',
+};
+
 export default function DrawerAppBar(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -51,7 +60,10 @@ export default function DrawerAppBar(props) {
             <List>
                 {navItemsDrawer.map((item) => (
                     <ListItem key={item} disablePadding>
-                        <ListItemButton sx={{ textAlign: 'center' }}>
+                        <ListItemButton
+                            sx={{ textAlign: 'center' }}
+                            onClick={() => navigate(pathLookup[item])}
+                        >
                             <ListItemText primary={item} />
                         </ListItemButton>
                     </ListItem>
@@ -101,7 +113,7 @@ export default function DrawerAppBar(props) {
                             <Button
                                 key={item}
                                 sx={{ color: '#fff' }}
-                                onClick={() => navigate(`/${item}`)}
+                                onClick={() => navigate(pathLookup[item])}
                             >
                                 {item}
                             </Button>
@@ -121,7 +133,7 @@ export default function DrawerAppBar(props) {
                                 }}
                                 size="large"
                                 color="inherit"
-                                onClick={() => navigate('/Mon Compte')}
+                                onClick={() => navigate('/moi')}
                             >
                                 <AccountCircle fontSize="large" />
                             </IconButton>

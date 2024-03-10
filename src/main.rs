@@ -67,9 +67,11 @@ async fn main() -> std::io::Result<()> {
                     .build(),
             )
             .route("/", web::get().to(index)) // Redirect all react routes to index
-            .route("/Connexion", web::get().to(index))
-            .route("/Accueil", web::get().to(index))
-            .route("/Mon Compte", web::get().to(index))
+            .route("/connexion", web::get().to(index))
+            .route("/leaderboard", web::get().to(index))
+            .route("/admin", web::get().to(index))
+            .route("/moi", web::get().to(index))
+            .route("/changermdp", web::get().to(index))
             .route("/health", web::get().to(health))
             .configure(config_api)
             .service(Files::new("/", "./static"))

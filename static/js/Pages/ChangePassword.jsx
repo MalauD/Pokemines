@@ -24,7 +24,7 @@ function ChangePassword() {
             new_password: data.get('newpassword'),
         })
             .then(() => {
-                navigate('/Mon Compte');
+                navigate('/moi');
             })
             .catch(() => {
                 setError('Erreur lors du changement de mot de passe');
@@ -40,7 +40,7 @@ function ChangePassword() {
                 alignItems: 'center',
             }}
         >
-            <Paper sx={{ pl: 10, pr: 10, pt: 5, pb: 5 }}>
+            <Paper sx={{ pl: '8vw', pr: '8vw', pt: '4vh', pb: '4vh' }}>
                 <Typography component="h1" variant="h4" sx={{ mb: 5 }} align="center">
                     Changer de mot de passe
                 </Typography>
