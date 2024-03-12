@@ -1,5 +1,3 @@
-use std::io::Read;
-
 use actix_multipart::form::MultipartForm;
 use actix_web::{web, HttpResponse};
 use bson::oid::ObjectId;
@@ -39,8 +37,9 @@ pub async fn upload_card(mut card_form: MultipartForm<CardReq>, user: User) -> C
     Ok(HttpResponse::Ok().json(json!({ "id": card_id })))
 }
 
-pub async fn get_card_of_user(req: web::Path<ObjectId>) -> CardResponse {
+pub async fn get_card_of_user(req: web::Path<String>, _: User) -> CardResponse {
     let db = get_mongo(None).await;
-    let cards = db.get_card_of_user(&req).await?;
+    let oid = ObjectId::parse_str(req.into_inner())?;
+    let cards = db.get_card_of_user(&oid).await?;
     Ok(HttpResponse::Ok().json(cards))
 }

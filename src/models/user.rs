@@ -124,6 +124,10 @@ impl User {
         self.id
     }
 
+    pub fn set_id(&mut self, id: ObjectId) {
+        self.id = Some(id);
+    }
+
     pub fn set_password(&mut self, password: &str) -> Result<(), UserError> {
         let argon2 = Argon2::default();
         let salt = SaltString::generate(&mut OsRng);

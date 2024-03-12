@@ -14,6 +14,7 @@ import Login from './Pages/Login';
 import MyAccount from './Pages/MyAccount';
 import ProtectedRoute from './ProtectedRoute';
 import ChangePassword from './Pages/ChangePassword';
+import UserAccount from './Pages/UserAccount';
 
 Axios.defaults.withCredentials = true;
 
@@ -92,6 +93,10 @@ function App() {
                             <Route
                                 path="/changermdp"
                                 element={<ProtectedRoute Component={ChangePassword} />}
+                            />
+                            <Route
+                                path="/utilisateur/:userId"
+                                element={<ProtectedRoute Component={UserAccount} />}
                             />
                         </Routes>
                     </Box>

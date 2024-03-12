@@ -77,7 +77,7 @@ export default function DrawerAppBar(props) {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar component="nav">
+            <AppBar component="nav" sx={{ height: '65px' }}>
                 <Toolbar sx={{ color: '#fff' }}>
                     <IconButton
                         color="inherit"
@@ -100,10 +100,10 @@ export default function DrawerAppBar(props) {
                             src="/android-chrome-192x192.png"
                             alt="Logo"
                             style={{
-                                height: 55,
-                                marginTop: 5,
-                                marginBottom: 5,
-                                marginRight: 10,
+                                height: '100%',
+                                paddingTop: 5,
+                                paddingBottom: 5,
+                                paddingRight: 10,
                             }}
                         />
                     </Box>

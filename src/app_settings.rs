@@ -16,6 +16,8 @@ pub struct AppSettings {
     pub s3_bucket: String,
     pub mongo_url: String,
     pub session_key: Option<String>,
+    pub meilisearch_host: String,
+    pub meilisearch_api_key: Option<String>,
 }
 
 static APP_SETTINGS: OnceCell<AppSettings> = OnceCell::new();

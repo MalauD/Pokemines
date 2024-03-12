@@ -19,7 +19,7 @@ impl MongoClient {
         coll.find_one(doc! {"_id": user}, None).await
     }
 
-    pub async fn save_user(&self, user: User) -> Result<ObjectId> {
+    pub async fn save_user(&self, user: &User) -> Result<ObjectId> {
         let coll = self._database.collection::<User>("User");
         let res = coll.insert_one(user, None).await?;
         Ok(res.inserted_id.as_object_id().unwrap())

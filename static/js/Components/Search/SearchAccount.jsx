@@ -2,6 +2,10 @@ import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import { Autocomplete, Grid } from '@mui/material';
+import Axios from 'axios';
+import { AccountCircle } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -47,18 +51,75 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchAccount() {
+    const [open, setOpen] = React.useState(false);
+    const [options, setOptions] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        if (!open) {
+            setOptions([]);
+        }
+    }, [open]);
+
+    const onInputChange = (event, newValue) => {
+        if (newValue) {
+            setLoading(true);
+            Axios.get(`/api/user/search?q=${newValue}&maxResults=20&page=0`).then((response) => {
+                setOptions(response.data);
+                setLoading(false);
+            });
+        }
+    };
+
     return (
-        <Search>
-            <SearchIconWrapper>
-                <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-                placeholder="Cherche un mineur"
-                inputProps={{
-                    'aria-label': 'search',
-                    type: 'search',
-                }}
-            />
-        </Search>
+        <Autocomplete
+            id="asynchronous-demo"
+            sx={{
+                maxWidth: 300,
+                color: 'inherit',
+                borderColor: 'inherit',
+            }}
+            open={open}
+            onOpen={() => {
+                setOpen(true);
+            }}
+            onClose={() => {
+                setOpen(false);
+            }}
+            isOptionEqualToValue={(option, value) =>
+                option.first_name === value.first_name && option.last_name === value.last_name
+            }
+            getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
+            options={options}
+            loading={loading}
+            onInputChange={onInputChange}
+            onChange={(event, newValue) => {
+                navigate(`/utilisateur/${newValue.id}`);
+            }}
+            renderInput={(params) => (
+                <Search ref={params.InputProps.ref}>
+                    <SearchIconWrapper>
+                        <SearchIcon />
+                    </SearchIconWrapper>
+                    <StyledInputBase
+                        placeholder="Cherche un mineur"
+                        inputProps={{ ...params.inputProps, 'aria-label': 'search' }}
+                    />
+                </Search>
+            )}
+            renderOption={(props, option) => (
+                <li {...props}>
+                    <Grid container alignItems="center">
+                        <Grid item sx={{ display: 'flex', width: 30 }}>
+                            <AccountCircle />
+                        </Grid>
+                        <Grid item sx={{ width: 'calc(100% - 30px)', wordWrap: 'break-word' }}>
+                            {option.first_name} {option.last_name}
+                        </Grid>
+                    </Grid>
+                </li>
+            )}
+        />
     );
 }

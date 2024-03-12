@@ -9,6 +9,10 @@ pub enum UserError {
     AuthenticationError,
     #[error("DatabaseError: something went wrong with mongodb")]
     DatabaseError(#[from] mongodb::error::Error),
+    #[error("Bson: something went wrong with the deserialization")]
+    Deserialization(#[from] bson::oid::Error),
+    #[error("MeilisearchError: something went wrong with meilisearch")]
+    MeilisearchError(#[from] meilisearch_sdk::errors::Error),
 }
 
 impl ResponseError for UserError {
@@ -17,6 +21,8 @@ impl ResponseError for UserError {
             Self::MismatchingCredential => StatusCode::UNAUTHORIZED,
             Self::AuthenticationError => StatusCode::INTERNAL_SERVER_ERROR,
             Self::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::Deserialization(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::MeilisearchError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 
@@ -33,6 +39,8 @@ pub enum CardError {
     Unauthorized,
     #[error("S3Error: something went wrong with s3")]
     S3Error(#[from] s3::error::S3Error),
+    #[error("Bson: something went wrong with the deserialization")]
+    Deserialization(#[from] bson::oid::Error),
 }
 
 impl ResponseError for CardError {
@@ -41,6 +49,7 @@ impl ResponseError for CardError {
             Self::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::Unauthorized => StatusCode::UNAUTHORIZED,
             Self::S3Error(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::Deserialization(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 

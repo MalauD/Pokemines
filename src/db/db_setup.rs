@@ -51,38 +51,10 @@ pub async fn get_mongo(mongo_url: Option<String>) -> &'static MongoClient {
             promo: None,
         };
         let admin = crate::models::User::from(admin_create_user);
-        MONGO.get().unwrap().save_user(admin).await.unwrap();
+        MONGO.get().unwrap().save_user(&admin).await.unwrap();
         log::info!("Admin user created");
     }
 
     drop(initialized);
     MONGO.get().unwrap()
-}
-
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct PaginationOptions {
-    page: usize,
-    max_results: u32,
-}
-
-impl PaginationOptions {
-    pub fn get_page(&self) -> usize {
-        self.page
-    }
-    pub fn get_max_results(&self) -> usize {
-        self.max_results as usize
-    }
-
-    pub fn trim_vec<T: Copy>(&self, input: &[T]) -> Vec<T> {
-        let rng = self.get_max_results() * self.get_page()
-            ..self.get_max_results() * (self.get_page() + 1);
-        let mut vec: Vec<T> = Vec::with_capacity(rng.len());
-        for (i, e) in input.iter().enumerate() {
-            if rng.contains(&i) {
-                vec.push(*e);
-            }
-        }
-        vec
-    }
 }

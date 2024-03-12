@@ -6,6 +6,7 @@ use serde_json::json;
 use crate::{
     db::get_mongo,
     models::{CreateUserReq, User, UserReq},
+    search::{get_meilisearch, UserMeilisearch},
     tools::UserError,
 };
 
@@ -50,15 +51,18 @@ pub async fn change_password(
 
 pub async fn create_user(new_user: web::Json<CreateUserReq>, user: User) -> UserResponse {
     let db = get_mongo(None).await;
+    let meilisearch = get_meilisearch(None).await;
     if !user.admin {
         return Ok(HttpResponse::Forbidden().finish());
     }
     let generated_password = User::generate_password();
-    let user = User::from(new_user.into_inner());
+    let mut user = User::from(new_user.into_inner());
     if db.has_user_by_mail(&user.mail).await? {
         return Ok(HttpResponse::Conflict().finish());
     }
-    let id = db.save_user(user).await?;
+    let id = db.save_user(&user).await?;
+    user.set_id(id);
+    meilisearch.index_users(vec![user]).await?;
     Ok(HttpResponse::Created().json(json!({ "id": id.to_hex(), "password": generated_password })))
 }
 

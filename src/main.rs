@@ -3,6 +3,7 @@ use crate::{
     app_settings::{get_settings, AppSettings},
     db::get_mongo,
     s3::get_s3,
+    search::{get_meilisearch, MeilisearchConfig},
 };
 use actix_files::{Files, NamedFile};
 use actix_identity::IdentityMiddleware;
@@ -24,6 +25,7 @@ mod db;
 mod handlers;
 mod models;
 mod s3;
+mod search;
 mod tools;
 
 async fn index(_req: HttpRequest) -> Result<NamedFile> {
@@ -53,6 +55,12 @@ async fn main() -> std::io::Result<()> {
 
     let _db = get_mongo(Some(config.mongo_url.clone())).await;
 
+    let _ = get_meilisearch(Some(MeilisearchConfig::new(
+        config.meilisearch_host.clone(),
+        config.meilisearch_api_key.clone(),
+    )))
+    .await;
+
     let _ = get_s3(Some(s3::S3Config {
         s3_url: config.s3_url.clone(),
         s3_region: config.s3_region.clone(),
@@ -81,6 +89,7 @@ async fn main() -> std::io::Result<()> {
             .route("/admin", web::get().to(index))
             .route("/moi", web::get().to(index))
             .route("/changermdp", web::get().to(index))
+            .route("/utilisateur/{id}", web::get().to(index))
             .route("/health", web::get().to(health))
             .configure(config_api)
             .service(Files::new("/", "./static"))
