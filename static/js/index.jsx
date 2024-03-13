@@ -15,6 +15,8 @@ import MyAccount from './Pages/MyAccount';
 import ProtectedRoute from './ProtectedRoute';
 import ChangePassword from './Pages/ChangePassword';
 import UserAccount from './Pages/UserAccount';
+import Admin from './Pages/Admin';
+import CardCreation from './Pages/CardCreation';
 
 Axios.defaults.withCredentials = true;
 
@@ -97,6 +99,11 @@ function App() {
                             <Route
                                 path="/utilisateur/:userId"
                                 element={<ProtectedRoute Component={UserAccount} />}
+                            />
+                            <Route path="/admin" element={<ProtectedRoute Component={Admin} />} />
+                            <Route
+                                path="/admin/card/create"
+                                element={<ProtectedRoute Component={CardCreation} />}
                             />
                         </Routes>
                     </Box>

@@ -86,7 +86,7 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(index)) // Redirect all react routes to index
             .route("/connexion", web::get().to(index))
             .route("/leaderboard", web::get().to(index))
-            .route("/admin", web::get().to(index))
+            .route("/admin/{tail:.*}", web::get().to(index))
             .route("/moi", web::get().to(index))
             .route("/changermdp", web::get().to(index))
             .route("/utilisateur/{id}", web::get().to(index))

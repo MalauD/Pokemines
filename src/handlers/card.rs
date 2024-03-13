@@ -24,17 +24,16 @@ pub async fn upload_card(mut card_form: MultipartForm<CardReq>, user: User) -> C
     let file = image_file.file.as_file_mut();
     let mut async_file = tokio::fs::File::from_std(file.try_clone().unwrap());
 
-    let card = Card::from(card_form.into_inner());
-    let card_id = db.save_card(&card).await?;
+    let card_number = db.get_last_card_number().await? + 1;
+    let number_of_card = card_form.card_count.0;
+
+    let card = Card::from_req(card_form.into_inner(), card_number);
+    let card_id = db.save_cards(&card, number_of_card).await?;
     s3.get_bucket()
-        .put_object_stream(&mut async_file, format!("cards/{}", card_id))
+        .put_object_stream(&mut async_file, format!("cards/{}", card_number))
         .await?;
 
-    if let Some(owner) = card.owner {
-        db.append_card(&owner, &card_id).await?;
-    }
-
-    Ok(HttpResponse::Ok().json(json!({ "id": card_id })))
+    Ok(HttpResponse::Ok().json(json!({ "ids": card_id })))
 }
 
 pub async fn get_card_of_user(req: web::Path<String>, _: User) -> CardResponse {

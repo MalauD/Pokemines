@@ -4,6 +4,13 @@ use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum CardStatus {
+    InMarketplace,
+    WaitingToTrade,
+    Owned,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Card {
     #[serde(
         rename = "_id",
@@ -15,6 +22,7 @@ pub struct Card {
     pub points: u32,
     pub strength: String,
     pub weakness: String,
+    pub card_number: u32,
     pub owner: Option<ObjectId>,
 }
 
@@ -24,19 +32,21 @@ pub struct CardReq {
     pub points: Text<u32>,
     pub strength: Text<String>,
     pub weakness: Text<String>,
-    pub owner: Text<Option<ObjectId>>,
     pub image: TempFile,
+    pub card_count: Text<u32>,
+    pub price: Text<u32>,
 }
 
-impl From<CardReq> for Card {
-    fn from(card: CardReq) -> Self {
+impl Card {
+    pub fn from_req(card: CardReq, card_number: u32) -> Self {
         Card {
             id: None,
             name: card.name.to_string(),
             points: card.points.0,
             strength: card.strength.to_string(),
             weakness: card.weakness.to_string(),
-            owner: card.owner.0,
+            card_number,
+            owner: None,
         }
     }
 }
