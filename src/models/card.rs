@@ -4,13 +4,6 @@ use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum CardStatus {
-    InMarketplace,
-    WaitingToTrade,
-    Owned,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Card {
     #[serde(
         rename = "_id",
