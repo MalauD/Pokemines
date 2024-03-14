@@ -17,6 +17,8 @@ import ChangePassword from './Pages/ChangePassword';
 import UserAccount from './Pages/UserAccount';
 import Admin from './Pages/Admin';
 import CardCreation from './Pages/CardCreation';
+import Marche from './Pages/Marche';
+import Transaction from './Pages/Transaction';
 
 Axios.defaults.withCredentials = true;
 
@@ -101,6 +103,11 @@ function App() {
                                 element={<ProtectedRoute Component={UserAccount} />}
                             />
                             <Route path="/admin" element={<ProtectedRoute Component={Admin} />} />
+                            <Route path="/marche" element={<ProtectedRoute Component={Marche} />} />
+                            <Route
+                                path="/transaction/:transactionId"
+                                element={<ProtectedRoute Component={Transaction} />}
+                            />
                             <Route
                                 path="/admin/card/create"
                                 element={<ProtectedRoute Component={CardCreation} />}

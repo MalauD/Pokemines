@@ -62,6 +62,7 @@ pub struct User {
     pub promo: Option<Promo>,
     pub admin: bool,
     pub cards: Vec<ObjectId>,
+    pub account_balance: u32,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -189,6 +190,7 @@ impl From<CreateUserReq> for User {
             promo: req.promo,
             admin: false,
             cards: vec![],
+            account_balance: 0,
         }
     }
 }

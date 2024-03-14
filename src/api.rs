@@ -23,6 +23,14 @@ pub fn config_api(cfg: &mut web::ServiceConfig) {
             .service(
                 web::scope("/card")
                     .service(web::resource("/upload").route(web::post().to(upload_card))),
+            )
+            .service(
+                web::scope("/transaction")
+                    .service(
+                        web::resource("/marketplace")
+                            .route(web::get().to(get_marketplace_transactions)),
+                    )
+                    .service(web::resource("/{id}").route(web::get().to(get_transaction_by_id))),
             ),
     );
 }

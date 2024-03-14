@@ -21,13 +21,14 @@ import useAdmin from '../Hooks/useAdmin';
 
 const drawerWidth = 240;
 
-const adminNavItems = ['Accueil', 'Leaderboard', 'Collection', 'Admin', 'Mon Compte'];
+const adminNavItems = ['Accueil', 'Leaderboard', 'Marché', 'Collection', 'Admin', 'Mon Compte'];
 const disconnectedNavItems = ['Accueil', 'Leaderboard', 'Connexion'];
 
 const pathLookup = {
     Accueil: '/',
     Leaderboard: '/leaderboard',
     Collection: '/collection',
+    Marché: '/marche',
     Admin: '/admin',
     'Mon Compte': '/moi',
     Connexion: '/connexion',

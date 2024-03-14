@@ -1,8 +1,10 @@
 mod auth;
-mod responses;
-mod user;
 mod card;
+mod responses;
+mod transaction;
+mod user;
 
 pub use auth::*;
-pub use user::*;
 pub use card::*;
+pub use transaction::*;
+pub use user::*;

@@ -93,7 +93,7 @@ function CardCreation() {
                         label="Faiblesse de la carte"
                     />
                     <Grid container spacing={0} direction="row" margin="normal">
-                        <Grid item xs={8} sx={{ pr: 2 }}>
+                        <Grid item xs={4}>
                             <TextField
                                 id="card_count"
                                 label="Exemplaires"
@@ -103,6 +103,9 @@ function CardCreation() {
                         </Grid>
                         <Grid item xs={4}>
                             <TextField id="points" label="Points" type="number" name="points" />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <TextField id="price" label="Prix" type="number" name="price" />
                         </Grid>
                     </Grid>
                     <Button

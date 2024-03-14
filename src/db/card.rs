@@ -49,4 +49,12 @@ impl MongoClient {
             None => Ok(0),
         }
     }
+
+    pub async fn get_cards_from_ids(&self, ids: Vec<ObjectId>) -> Result<Vec<Card>> {
+        let coll = self._database.collection::<Card>("Card");
+        coll.find(doc! {"_id": {"$in": ids}}, None)
+            .await?
+            .try_collect()
+            .await
+    }
 }

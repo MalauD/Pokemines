@@ -49,4 +49,15 @@ impl MongoClient {
             .await?;
         Ok(())
     }
+
+    pub async fn modify_account_balance(&self, user_id: &ObjectId, amount: i32) -> Result<()> {
+        let coll = self._database.collection::<User>("User");
+        coll.update_one(
+            doc! {"_id": user_id},
+            doc! {"$inc": {"account_balance": amount}},
+            None,
+        )
+        .await?;
+        Ok(())
+    }
 }

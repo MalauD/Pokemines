@@ -26,14 +26,19 @@ pub async fn upload_card(mut card_form: MultipartForm<CardReq>, user: User) -> C
 
     let card_number = db.get_last_card_number().await? + 1;
     let number_of_card = card_form.card_count.0;
+    let price = card_form.price.0;
 
     let card = Card::from_req(card_form.into_inner(), card_number);
-    let card_id = db.save_cards(&card, number_of_card).await?;
+    let card_ids = db.save_cards(&card, number_of_card).await?;
     s3.get_bucket()
         .put_object_stream(&mut async_file, format!("cards/{}", card_number))
         .await?;
 
-    Ok(HttpResponse::Ok().json(json!({ "ids": card_id })))
+    // Put objects in marketplace
+    db.put_cards_in_marketplace(card_ids.clone(), price, user.get_id().unwrap().clone())
+        .await?;
+
+    Ok(HttpResponse::Ok().json(json!({ "ids": card_ids })))
 }
 
 pub async fn get_card_of_user(req: web::Path<String>, _: User) -> CardResponse {

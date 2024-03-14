@@ -41,6 +41,8 @@ pub enum CardError {
     S3Error(#[from] s3::error::S3Error),
     #[error("Bson: something went wrong with the deserialization")]
     Deserialization(#[from] bson::oid::Error),
+    #[error("Not Found")]
+    NotFound,
 }
 
 impl ResponseError for CardError {
@@ -50,6 +52,7 @@ impl ResponseError for CardError {
             Self::Unauthorized => StatusCode::UNAUTHORIZED,
             Self::S3Error(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::Deserialization(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::NotFound => StatusCode::NOT_FOUND,
         }
     }
 

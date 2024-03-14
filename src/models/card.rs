@@ -10,7 +10,7 @@ pub struct Card {
         skip_serializing_if = "Option::is_none",
         serialize_with = "serialize_option_oid_hex"
     )]
-    id: Option<ObjectId>,
+    pub id: Option<ObjectId>,
     pub name: String,
     pub points: u32,
     pub strength: String,
