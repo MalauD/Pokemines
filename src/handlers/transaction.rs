@@ -1,10 +1,11 @@
 use actix_web::{web, HttpResponse};
 use bson::oid::ObjectId;
+use serde::Deserialize;
 use std::collections::HashMap;
 
 use crate::{
     db::get_mongo,
-    models::{Card, PopulatedTransaction, PopulatedTransactionType, User},
+    models::{Card, PopulatedTransaction, PopulatedTransactionType, TransactionStatus, User},
     tools::CardError,
 };
 
@@ -26,9 +27,21 @@ pub async fn get_transaction_by_id(req: web::Path<String>, _: User) -> CardRespo
     Ok(HttpResponse::Ok().json(transaction))
 }
 
-pub async fn get_transaction_by_number(req: web::Path<u32>, _: User) -> CardResponse {
+#[derive(Debug, Deserialize)]
+pub struct TransactionQueryStatus {
+    #[serde(rename = "status")]
+    transaction_status: Option<TransactionStatus>,
+}
+
+pub async fn get_transaction_by_number(
+    req: web::Path<u32>,
+    _: User,
+    query: web::Query<TransactionQueryStatus>,
+) -> CardResponse {
     let db = get_mongo(None).await;
-    let transaction = db.get_transactions_by_number(req.into_inner()).await?;
+    let transaction = db
+        .get_transactions_by_number(req.into_inner(), query.into_inner().transaction_status)
+        .await?;
     Ok(HttpResponse::Ok().json(transaction))
 }
 
@@ -39,6 +52,13 @@ pub async fn transaction_pay(user: User, req: web::Path<String>) -> CardResponse
         .get_transaction_by_id(&tid)
         .await?
         .ok_or(CardError::NotFound)?;
+
+    if transaction.sender_id == user.get_id().unwrap()
+        || transaction.status != TransactionStatus::Waiting
+    {
+        return Err(CardError::Unauthorized);
+    }
+
     // Verify that user has enough money
     match transaction.transaction_type {
         PopulatedTransactionType::Marketplace { price, sender_card } => {
@@ -67,4 +87,45 @@ pub async fn transaction_pay(user: User, req: web::Path<String>) -> CardResponse
             receiver_cards: _,
         } => Ok(HttpResponse::MethodNotAllowed().body("Not implemented")),
     }
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SellRequest {
+    card_id: String,
+    price: u32,
+}
+
+pub async fn sell_card(user: User, req: web::Json<SellRequest>) -> CardResponse {
+    let db = get_mongo(None).await;
+    let card_id = ObjectId::parse_str(&req.card_id)?;
+    let transactions = db
+        .put_cards_in_marketplace(vec![card_id], req.price, user.get_id().unwrap())
+        .await?;
+    let transaction = db
+        .get_transaction_by_id(transactions.first().unwrap())
+        .await?
+        .ok_or(CardError::NotFound)?;
+    Ok(HttpResponse::Ok().json(transaction))
+}
+
+pub async fn transaction_cancel(user: User, req: web::Path<String>) -> CardResponse {
+    let db = get_mongo(None).await;
+    let tid = ObjectId::parse_str(req.into_inner())?;
+    let transaction = db
+        .get_transaction_by_id(&tid)
+        .await?
+        .ok_or(CardError::NotFound)?;
+
+    if transaction.sender_id != user.get_id().unwrap()
+        || transaction.status != TransactionStatus::Waiting
+    {
+        return Err(CardError::Unauthorized);
+    }
+
+    db.cancel_transaction(&tid).await?;
+    let transaction = db
+        .get_transaction_by_id(&tid)
+        .await?
+        .ok_or(CardError::NotFound)?;
+    Ok(HttpResponse::Ok().json(transaction))
 }

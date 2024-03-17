@@ -41,6 +41,7 @@
         "@mui/material": "^5.15.12",
         "@mui/x-data-grid": "^6.19.6",
         "axios": "^1.6.7",
+        "notistack": "^3.0.1",
         "prop-types": "^15.8.1",
         "query-string": "^9.0.0",
         "react": "^18.2.0",

@@ -16,35 +16,14 @@ use super::serialize_option_oid_hex;
 
 #[derive(Debug, Deserialize, Serialize, Clone, Copy)]
 pub enum Promo {
+    #[serde(rename = "NA")]
     PNA,
+    #[serde(rename = "2A")]
     P2A,
+    #[serde(rename = "3A")]
     P3A,
+    #[serde(rename = "4A")]
     P4A,
-}
-
-impl std::str::FromStr for Promo {
-    type Err = ();
-
-    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
-        match s {
-            "NA" => Ok(Promo::PNA),
-            "2A" => Ok(Promo::P2A),
-            "3A" => Ok(Promo::P3A),
-            "4A" => Ok(Promo::P4A),
-            _ => Err(()),
-        }
-    }
-}
-
-impl Promo {
-    pub fn to_string(&self) -> String {
-        match self {
-            Promo::PNA => "NA".to_string(),
-            Promo::P2A => "2A".to_string(),
-            Promo::P3A => "3A".to_string(),
-            Promo::P4A => "4A".to_string(),
-        }
-    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -79,6 +58,7 @@ pub struct PublicUser {
     pub promo: Option<Promo>,
     pub admin: bool,
     pub cards: Vec<ObjectId>,
+    pub account_balance: u32,
 }
 
 impl From<User> for PublicUser {
@@ -91,6 +71,7 @@ impl From<User> for PublicUser {
             promo: user.promo,
             admin: user.admin,
             cards: user.cards,
+            account_balance: user.account_balance,
         }
     }
 }

@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use enum_as_inner::EnumAsInner;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum TransactionStatus {
     Waiting,
     Completed,
@@ -44,7 +44,7 @@ pub struct Transaction {
         skip_serializing_if = "Option::is_none",
         serialize_with = "serialize_option_oid_hex"
     )]
-    id: Option<ObjectId>,
+    pub id: Option<ObjectId>,
     pub sender_id: ObjectId,
     pub receiver_id: Option<ObjectId>,
     #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]

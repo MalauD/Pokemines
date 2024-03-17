@@ -12,14 +12,18 @@ impl MongoClient {
         card_ids: Vec<ObjectId>,
         price: u32,
         sender_id: ObjectId,
-    ) -> Result<()> {
+    ) -> Result<Vec<ObjectId>> {
         let coll = self._database.collection::<Transaction>("Transaction");
         let transaction: Vec<Transaction> = card_ids
             .iter()
             .map(|c| Transaction::from_marketplace(sender_id, *c, price))
             .collect();
-        coll.insert_many(transaction, None).await?;
-        Ok(())
+        let res = coll.insert_many(&transaction, None).await?;
+        Ok(res
+            .inserted_ids
+            .values()
+            .map(|d| d.as_object_id().unwrap().clone())
+            .collect())
     }
 
     pub async fn buy_card_from_marketplace(
@@ -43,7 +47,7 @@ impl MongoClient {
         Ok(())
     }
 
-    pub async fn cancel_transaction(&self, transaction_id: ObjectId) -> Result<()> {
+    pub async fn cancel_transaction(&self, transaction_id: &ObjectId) -> Result<()> {
         let coll = self._database.collection::<Transaction>("Transaction");
         coll.update_one(
             doc! {"_id": transaction_id},
@@ -220,13 +224,14 @@ impl MongoClient {
     pub async fn get_transactions_by_number(
         &self,
         card_number: u32,
+        status: Option<TransactionStatus>,
     ) -> Result<Vec<PopulatedTransaction>> {
         let coll = self._database.collection::<Transaction>("Transaction");
         let pipeline = vec![
             doc! {
                 "$match": {
-                    "status": TransactionStatus::Waiting.to_string(),
-                    "transaction_type.type":  "Marketplace"
+                    "transaction_type.type":  "Marketplace",
+                    "status": status.unwrap_or(TransactionStatus::Waiting).to_string()
                 }
             },
             doc! {

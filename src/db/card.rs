@@ -62,6 +62,15 @@ impl MongoClient {
             .await?)
     }
 
+    pub async fn get_card_by_number(&self, card_number: u32) -> Result<Vec<Card>> {
+        let coll = self._database.collection::<Card>("Card");
+        Ok(coll
+            .find(doc! {"card_number": card_number}, None)
+            .await?
+            .try_collect()
+            .await?)
+    }
+
     pub async fn get_last_card_number(&self) -> Result<u32> {
         // Get max of card_number of all cards
         let coll = self._database.collection::<Card>("Card");

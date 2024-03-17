@@ -1,7 +1,17 @@
-import { Box, CircularProgress, Paper, Typography } from '@mui/material';
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Grid,
+    Paper,
+    Snackbar,
+    TextField,
+    Typography,
+} from '@mui/material';
 import React, { useState } from 'react';
 import Axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 import Card from '../Components/Cards/Card';
 import MarketPlaceTransactionList from '../Components/Transactions/MarketPlaceTransactionList';
 import CurrentUserContext from '..';
@@ -12,18 +22,23 @@ function CardPage() {
     const [card, setCard] = useState({});
     const [transactions, setTransactions] = useState([]);
     const { currentUser, setCurrentUser } = React.useContext(CurrentUserContext);
-
-    const RequestTransactionsByNumber = () => {
-        Axios.get(`/api/transaction/number/${cardNumber}`).then((res) => {
-            const { data } = res;
-            setTransactions(data);
-            setCard(data[0].transaction_type.sender_card);
-            setLoading(false);
-        });
-    };
+    const { enqueueSnackbar } = useSnackbar();
+    const [allCards, setAllCards] = useState([]);
+    const [ownedCards, setOwnedCards] = useState([]);
+    const [sellingPrice, setSellingPrice] = useState(0);
 
     React.useEffect(() => {
-        RequestTransactionsByNumber();
+        Axios.get(`/api/card/number/${cardNumber}`).then((res) => {
+            setCard(res.data[0]);
+            setAllCards(res.data);
+            setOwnedCards(res.data.filter((c) => c.owner.$oid === currentUser._id));
+
+            Axios.get(`/api/transaction/number/${cardNumber}?status=Waiting`).then((res2) => {
+                const { data } = res2;
+                setTransactions(data);
+                setLoading(false);
+            });
+        });
     }, [cardNumber]);
 
     if (loading) {
@@ -47,6 +62,28 @@ function CardPage() {
             ...currentUser,
             account_balance: currentUser.account_balance - transaction.transaction_type.price,
             cards: [...currentUser.cards, transaction.transaction_type.sender_card._id],
+        });
+    };
+
+    const onTransactionCancelled = (transaction) => {
+        setTransactions((prev) => prev.filter((t) => t._id !== transaction._id));
+    };
+
+    const sellCard = () => {
+        const alreadyInMarketPlaceCards = transactions
+            .filter((t) => t.sender._id === currentUser._id)
+            .map((t) => t.transaction_type.sender_card._id);
+        const candidates = ownedCards.filter((c) => !alreadyInMarketPlaceCards.includes(c._id));
+        if (candidates.length === 0) {
+            enqueueSnackbar('Toutes vos cadres sont à vendre', { variant: 'error' });
+            return;
+        }
+        Axios.post('/api/transaction/sell', {
+            card_id: candidates[0]._id,
+            price: parseInt(sellingPrice),
+        }).then((res) => {
+            setTransactions([...transactions, res.data]);
+            enqueueSnackbar('Carte mise en vente', { variant: 'success' });
         });
     };
 
@@ -77,9 +114,54 @@ function CardPage() {
                     Ventes sur le marché
                 </Typography>
                 <MarketPlaceTransactionList
-                    transactions={transactions}
+                    transactions={transactions.filter((t) => t.sender._id !== currentUser._id)}
                     onTransactionCompleted={onTransactionCompleted}
+                    onTransactionCancelled={onTransactionCancelled}
                 />
+                <Typography variant="h5" gutterBottom sx={{ pt: 2 }}>
+                    Vous possédez {ownedCards.length} exemplaires de cette carte
+                </Typography>
+                {ownedCards.length > 0 && (
+                    <>
+                        <Grid
+                            container
+                            spacing={4}
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{ mb: 2 }}
+                        >
+                            <Grid item xs={5}>
+                                <TextField
+                                    label="Prix de vente"
+                                    variant="outlined"
+                                    fullWidth
+                                    type="number"
+                                    sx={{ mt: 2, height: '100%' }}
+                                    value={sellingPrice}
+                                    onChange={(e) => setSellingPrice(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={5}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    fullWidth
+                                    onClick={sellCard}
+                                    sx={{ mt: 2, color: 'white', height: '100%' }}
+                                >
+                                    Mettre en vente
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <MarketPlaceTransactionList
+                            transactions={transactions.filter(
+                                (t) => t.sender._id === currentUser._id
+                            )}
+                            onTransactionCompleted={onTransactionCompleted}
+                            onTransactionCancelled={onTransactionCancelled}
+                        />
+                    </>
+                )}
             </Paper>
         </Box>
     );

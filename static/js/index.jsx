@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import '../index.css';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Box, CircularProgress } from '@mui/material';
+import { SnackbarProvider } from 'notistack';
 import LexendFont from '../fonts/Lexend-VariableFont_wght.ttf';
 
 import TopNav from './Components/TopNav';
@@ -88,49 +89,60 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            {/* eslint-disable-next-line react/jsx-no-constructed-context-values */}
-            <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
-                <Router>
-                    <TopNav />
-                    <Box component="main" sx={{ paddingTop: 10 }}>
-                        <Routes>
-                            <Route path="/" element={<Accueil />} />
-                            <Route path="/connexion" element={<Login />} />
-                            <Route path="/moi" element={<ProtectedRoute Component={MyAccount} />} />
-                            <Route
-                                path="/changermdp"
-                                element={<ProtectedRoute Component={ChangePassword} />}
-                            />
-                            <Route
-                                path="/utilisateur/:userId"
-                                element={<ProtectedRoute Component={UserAccount} />}
-                            />
-                            <Route path="/admin" element={<ProtectedRoute Component={Admin} />} />
-                            <Route path="/marche" element={<ProtectedRoute Component={Marche} />} />
-                            <Route
-                                path="/pokedex"
-                                element={<ProtectedRoute Component={Pokedex} />}
-                            />
-                            <Route
-                                path="/transaction/:transactionId"
-                                element={<ProtectedRoute Component={Transaction} />}
-                            />
-                            <Route
-                                path="/admin/card/create"
-                                element={<ProtectedRoute Component={CardCreation} />}
-                            />
-                            <Route
-                                path="/admin/utilisateur/create"
-                                element={<ProtectedRoute Component={UserCreation} />}
-                            />
-                            <Route
-                                path="/carte/numero/:cardNumber"
-                                element={<ProtectedRoute Component={CardPage} />}
-                            />
-                        </Routes>
-                    </Box>
-                </Router>
-            </CurrentUserContext.Provider>
+            <SnackbarProvider maxSnack={3}>
+                {/* eslint-disable-next-line react/jsx-no-constructed-context-values */}
+                <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
+                    <Router>
+                        <TopNav />
+                        <Box component="main" sx={{ paddingTop: 10 }}>
+                            <Routes>
+                                <Route path="/" element={<Accueil />} />
+                                <Route path="/connexion" element={<Login />} />
+                                <Route
+                                    path="/moi"
+                                    element={<ProtectedRoute Component={MyAccount} />}
+                                />
+                                <Route
+                                    path="/changermdp"
+                                    element={<ProtectedRoute Component={ChangePassword} />}
+                                />
+                                <Route
+                                    path="/utilisateur/:userId"
+                                    element={<ProtectedRoute Component={UserAccount} />}
+                                />
+                                <Route
+                                    path="/admin"
+                                    element={<ProtectedRoute Component={Admin} />}
+                                />
+                                <Route
+                                    path="/marche"
+                                    element={<ProtectedRoute Component={Marche} />}
+                                />
+                                <Route
+                                    path="/pokedex"
+                                    element={<ProtectedRoute Component={Pokedex} />}
+                                />
+                                <Route
+                                    path="/transaction/:transactionId"
+                                    element={<ProtectedRoute Component={Transaction} />}
+                                />
+                                <Route
+                                    path="/admin/card/create"
+                                    element={<ProtectedRoute Component={CardCreation} />}
+                                />
+                                <Route
+                                    path="/admin/utilisateur/create"
+                                    element={<ProtectedRoute Component={UserCreation} />}
+                                />
+                                <Route
+                                    path="/carte/numero/:cardNumber"
+                                    element={<ProtectedRoute Component={CardPage} />}
+                                />
+                            </Routes>
+                        </Box>
+                    </Router>
+                </CurrentUserContext.Provider>
+            </SnackbarProvider>
         </ThemeProvider>
     );
 }

@@ -104,12 +104,12 @@ export default function UserCreation() {
                                     label="Promo"
                                     name="promo"
                                     labelId="promo-select-label"
-                                    defaultValue="PNA"
+                                    defaultValue="NA"
                                 >
-                                    <MenuItem value="PNA">NA</MenuItem>
-                                    <MenuItem value="P2A">2A</MenuItem>
-                                    <MenuItem value="P3A">3A</MenuItem>
-                                    <MenuItem value="P4A">4A</MenuItem>
+                                    <MenuItem value="NA">NA</MenuItem>
+                                    <MenuItem value="2A">2A</MenuItem>
+                                    <MenuItem value="3A">3A</MenuItem>
+                                    <MenuItem value="4A">4A</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>

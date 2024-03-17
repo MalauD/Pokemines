@@ -2,8 +2,17 @@ import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import Axios from 'axios';
+import { useSnackbar } from 'notistack';
+import CurrentUserContext from '../..';
 
-export default function MarketPlaceTransactionList({ transactions, onTransactionCompleted }) {
+export default function MarketPlaceTransactionList({
+    transactions,
+    onTransactionCompleted,
+    onTransactionCancelled,
+}) {
+    const { currentUser } = React.useContext(CurrentUserContext);
+    const { enqueueSnackbar } = useSnackbar();
+
     const columns = [
         {
             field: 'sender',
@@ -24,8 +33,21 @@ export default function MarketPlaceTransactionList({ transactions, onTransaction
             minWidth: 120,
             renderCell: (params) => {
                 const transaction = params.row;
+                const isMyCard = transaction.sender._id === currentUser._id;
                 const onClick = () => {
+                    if (isMyCard) {
+                        Axios.post(`/api/transaction/id/${transaction._id}/cancel`).then((res) => {
+                            enqueueSnackbar('Transaction annulée avec succès', {
+                                variant: 'success',
+                            });
+                            onTransactionCancelled(res.data);
+                        });
+                        return;
+                    }
                     Axios.post(`/api/transaction/id/${transaction._id}/pay`).then((res) => {
+                        enqueueSnackbar('Transaction effectuée avec succès', {
+                            variant: 'success',
+                        });
                         onTransactionCompleted(res.data);
                     });
                 };
@@ -38,7 +60,7 @@ export default function MarketPlaceTransactionList({ transactions, onTransaction
                         size="small"
                         onClick={onClick}
                     >
-                        Acheter
+                        {isMyCard ? 'Annuler' : 'Acheter'}
                     </Button>
                 );
             },
