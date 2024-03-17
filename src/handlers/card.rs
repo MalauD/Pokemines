@@ -47,3 +47,15 @@ pub async fn get_card_of_user(req: web::Path<String>, _: User) -> CardResponse {
     let cards = db.get_card_of_user(&oid).await?;
     Ok(HttpResponse::Ok().json(cards))
 }
+
+pub async fn get_card_image(req: web::Path<String>) -> CardResponse {
+    let s3 = get_s3(None).await;
+    let image = s3
+        .get_bucket()
+        .get_object(format!("cards/{}", req.into_inner()))
+        .await?;
+
+    Ok(HttpResponse::Ok()
+        .content_type("image/png")
+        .body(image.to_vec()))
+}

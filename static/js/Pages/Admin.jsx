@@ -26,6 +26,14 @@ function Admin() {
                 >
                     Créer des cartes
                 </Button>
+                <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 2, color: 'white' }}
+                    onClick={() => navigate('/admin/utilisateur/create')}
+                >
+                    Créer un utilisateur
+                </Button>
             </Paper>
         </Box>
     );

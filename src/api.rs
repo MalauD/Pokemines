@@ -22,7 +22,11 @@ pub fn config_api(cfg: &mut web::ServiceConfig) {
             )
             .service(
                 web::scope("/card")
-                    .service(web::resource("/upload").route(web::post().to(upload_card))),
+                    .service(web::resource("/upload").route(web::post().to(upload_card)))
+                    .service(
+                        web::resource("/number/{card_number}/image")
+                            .route(web::get().to(get_card_image)),
+                    ),
             )
             .service(
                 web::scope("/transaction")
@@ -30,7 +34,12 @@ pub fn config_api(cfg: &mut web::ServiceConfig) {
                         web::resource("/marketplace")
                             .route(web::get().to(get_marketplace_transactions)),
                     )
-                    .service(web::resource("/{id}").route(web::get().to(get_transaction_by_id))),
+                    .service(web::resource("/id/{id}").route(web::get().to(get_transaction_by_id)))
+                    .service(web::resource("/id/{id}/pay").route(web::post().to(transaction_pay)))
+                    .service(
+                        web::resource("/number/{number}")
+                            .route(web::get().to(get_transaction_by_number)),
+                    ),
             ),
     );
 }

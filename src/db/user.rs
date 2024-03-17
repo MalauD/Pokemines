@@ -60,4 +60,26 @@ impl MongoClient {
         .await?;
         Ok(())
     }
+
+    pub async fn transfer_money(
+        &self,
+        sender_id: &ObjectId,
+        receiver_id: &ObjectId,
+        amount: i32,
+    ) -> Result<()> {
+        let coll = self._database.collection::<User>("User");
+        coll.update_one(
+            doc! {"_id": receiver_id},
+            doc! {"$inc": {"account_balance": amount}},
+            None,
+        )
+        .await?;
+        coll.update_one(
+            doc! {"_id": sender_id},
+            doc! {"$inc": {"account_balance": -amount as i32}},
+            None,
+        )
+        .await?;
+        Ok(())
+    }
 }

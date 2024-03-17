@@ -90,6 +90,8 @@ async fn main() -> std::io::Result<()> {
             .route("/moi", web::get().to(index))
             .route("/changermdp", web::get().to(index))
             .route("/utilisateur/{id}", web::get().to(index))
+            .route("/marche", web::get().to(index))
+            .route("/carte/{tail:.*}", web::get().to(index))
             .route("/health", web::get().to(health))
             .configure(config_api)
             .service(Files::new("/", "./static"))

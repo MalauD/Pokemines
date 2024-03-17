@@ -19,6 +19,8 @@ import Admin from './Pages/Admin';
 import CardCreation from './Pages/CardCreation';
 import Marche from './Pages/Marche';
 import Transaction from './Pages/Transaction';
+import CardPage from './Pages/CardPage';
+import UserCreation from './Pages/UserCreation';
 
 Axios.defaults.withCredentials = true;
 
@@ -111,6 +113,14 @@ function App() {
                             <Route
                                 path="/admin/card/create"
                                 element={<ProtectedRoute Component={CardCreation} />}
+                            />
+                            <Route
+                                path="/admin/utilisateur/create"
+                                element={<ProtectedRoute Component={UserCreation} />}
+                            />
+                            <Route
+                                path="/carte/numero/:cardNumber"
+                                element={<ProtectedRoute Component={CardPage} />}
                             />
                         </Routes>
                     </Box>

@@ -1,4 +1,4 @@
-use super::{serialize_option_oid_hex, Card};
+use super::{serialize_option_oid_hex, Card, PublicUser, User};
 use bson::oid::ObjectId;
 use chrono::{DateTime, Utc};
 use enum_as_inner::EnumAsInner;
@@ -64,6 +64,7 @@ pub struct PopulatedTransaction {
     )]
     id: Option<ObjectId>,
     pub sender_id: ObjectId,
+    pub sender: PublicUser,
     pub receiver_id: Option<ObjectId>,
     #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
     pub created_at: DateTime<Utc>,
@@ -163,9 +164,11 @@ impl PopulatedTransaction {
     pub fn from_transaction(
         transaction: Transaction,
         populated_transaction: PopulatedTransactionType,
+        sender: PublicUser,
     ) -> Self {
         Self {
             id: transaction.id,
+            sender,
             sender_id: transaction.sender_id,
             receiver_id: transaction.receiver_id,
             created_at: transaction.created_at,
@@ -199,4 +202,10 @@ impl PopulatedTransactionType {
             },
         }
     }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct GroupedPopulatedTransaction {
+    pub _id: u32,
+    pub transactions: Vec<PopulatedTransaction>,
 }

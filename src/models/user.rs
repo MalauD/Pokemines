@@ -107,6 +107,7 @@ pub struct CreateUserReq {
     pub first_name: String,
     pub last_name: String,
     pub password: String,
+    pub account_balance: u32,
     pub promo: Option<Promo>,
 }
 

@@ -1,4 +1,7 @@
-use crate::{db::MongoClient, models::Card};
+use crate::{
+    db::MongoClient,
+    models::{Card, User},
+};
 use bson::oid::ObjectId;
 use futures::TryStreamExt;
 use mongodb::{bson::doc, error::Result, options::FindOneOptions};
@@ -56,5 +59,26 @@ impl MongoClient {
             .await?
             .try_collect()
             .await
+    }
+
+    pub async fn transfer_card(
+        &self,
+        card: &ObjectId,
+        sender: &ObjectId,
+        receiver: &ObjectId,
+    ) -> Result<()> {
+        let coll = self._database.collection::<Card>("Card");
+        coll.update_one(doc! {"_id": card}, doc! {"$set": {"owner": receiver}}, None)
+            .await?;
+        let coll = self._database.collection::<User>("User");
+        coll.update_one(
+            doc! {"_id": receiver},
+            doc! {"$push": {"cards": card}},
+            None,
+        )
+        .await?;
+        coll.update_one(doc! {"_id": sender}, doc! {"$pull": {"cards": card}}, None)
+            .await?;
+        Ok(())
     }
 }

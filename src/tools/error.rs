@@ -43,6 +43,8 @@ pub enum CardError {
     Deserialization(#[from] bson::oid::Error),
     #[error("Not Found")]
     NotFound,
+    #[error("InsufficientFunds: you don't have enough money")]
+    InsufficientFunds,
 }
 
 impl ResponseError for CardError {
@@ -53,6 +55,7 @@ impl ResponseError for CardError {
             Self::S3Error(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::Deserialization(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::NotFound => StatusCode::NOT_FOUND,
+            Self::InsufficientFunds => StatusCode::FORBIDDEN,
         }
     }
 
