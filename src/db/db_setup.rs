@@ -47,10 +47,14 @@ pub async fn get_mongo(mongo_url: Option<String>) -> &'static MongoClient {
             mail: "admin".to_string(),
             first_name: "admin".to_string(),
             last_name: "admin".to_string(),
-            password: get_settings_sync().admin_password.clone(),
+            password: None,
             promo: None,
+            account_balance: 0,
         };
-        let admin = crate::models::User::from(admin_create_user);
+        let admin = crate::models::User::from_create_req(
+            admin_create_user,
+            get_settings_sync().admin_password.clone(),
+        );
         MONGO.get().unwrap().save_user(&admin).await.unwrap();
         log::info!("Admin user created");
     }

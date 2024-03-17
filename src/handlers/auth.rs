@@ -55,15 +55,18 @@ pub async fn create_user(new_user: web::Json<CreateUserReq>, user: User) -> User
     if !user.admin {
         return Ok(HttpResponse::Forbidden().finish());
     }
-    let generated_password = User::generate_password();
-    let mut user = User::from(new_user.into_inner());
+    let password = match &new_user.password {
+        Some(p) => p.clone(),
+        None => User::generate_password(),
+    };
+    let mut user = User::from_create_req(new_user.into_inner(), password.clone());
     if db.has_user_by_mail(&user.mail).await? {
         return Ok(HttpResponse::Conflict().finish());
     }
     let id = db.save_user(&user).await?;
     user.set_id(id);
     meilisearch.index_users(vec![user]).await?;
-    Ok(HttpResponse::Created().json(json!({ "id": id.to_hex(), "password": generated_password })))
+    Ok(HttpResponse::Created().json(json!({ "id": id.to_hex(), "password": password })))
 }
 
 pub async fn logout(id: Identity) -> UserResponse {

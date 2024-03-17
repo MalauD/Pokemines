@@ -25,7 +25,7 @@ export default function MarketPlaceTransactionList({ transactions, onTransaction
             renderCell: (params) => {
                 const transaction = params.row;
                 const onClick = () => {
-                    Axios.post(`/api/id/${transaction._id}/pay`).then((res) => {
+                    Axios.post(`/api/transaction/id/${transaction._id}/pay`).then((res) => {
                         onTransactionCompleted(res.data);
                     });
                 };

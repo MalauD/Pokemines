@@ -106,12 +106,34 @@ pub struct CreateUserReq {
     pub mail: String,
     pub first_name: String,
     pub last_name: String,
-    pub password: String,
+    pub password: Option<String>,
     pub account_balance: u32,
     pub promo: Option<Promo>,
 }
 
 impl User {
+    pub fn from_create_req(req: CreateUserReq, password: String) -> Self {
+        let argon2 = Argon2::default();
+        let salt = SaltString::generate(&mut OsRng);
+
+        let hash = argon2
+            .hash_password(password.as_bytes(), &salt)
+            .unwrap()
+            .to_string();
+
+        User {
+            id: None,
+            mail: req.mail,
+            first_name: req.first_name,
+            last_name: req.last_name,
+            credential: hash,
+            promo: req.promo,
+            admin: false,
+            cards: vec![],
+            account_balance: req.account_balance,
+        }
+    }
+
     pub fn login(&self, user: &UserReq) -> Result<(), UserError> {
         let parsed_hash =
             PasswordHash::new(&self.credential).map_err(|_| UserError::AuthenticationError)?;
@@ -169,29 +191,5 @@ impl FromRequest for User {
 
             Err(ErrorUnauthorized("unauthorized"))
         })
-    }
-}
-
-impl From<CreateUserReq> for User {
-    fn from(req: CreateUserReq) -> Self {
-        let argon2 = Argon2::default();
-        let salt = SaltString::generate(&mut OsRng);
-
-        let hash = argon2
-            .hash_password(req.password.as_bytes(), &salt)
-            .unwrap()
-            .to_string();
-
-        User {
-            id: None,
-            mail: req.mail,
-            first_name: req.first_name,
-            last_name: req.last_name,
-            credential: hash,
-            promo: req.promo,
-            admin: false,
-            cards: vec![],
-            account_balance: 0,
-        }
     }
 }

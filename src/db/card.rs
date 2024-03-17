@@ -1,9 +1,9 @@
 use crate::{
     db::MongoClient,
-    models::{Card, User},
+    models::{Card, GroupedCard, User},
 };
 use bson::oid::ObjectId;
-use futures::TryStreamExt;
+use futures::{StreamExt, TryStreamExt};
 use mongodb::{bson::doc, error::Result, options::FindOneOptions};
 
 impl MongoClient {
@@ -35,6 +35,31 @@ impl MongoClient {
             .await?
             .try_collect()
             .await
+    }
+
+    pub async fn get_card_of_user_grouped(&self, user: &ObjectId) -> Result<Vec<GroupedCard>> {
+        let coll = self._database.collection::<Card>("Card");
+        let pipeline = vec![
+            doc! {
+                "$match": {
+                    "owner": user
+                }
+            },
+            doc! {
+                "$group": {
+                    "_id": "$card_number",
+                    "cards": {
+                        "$push": "$$ROOT"
+                    }
+                }
+            },
+        ];
+        Ok(coll
+            .aggregate(pipeline, None)
+            .await?
+            .map(|x| bson::from_document(x.unwrap()))
+            .try_collect()
+            .await?)
     }
 
     pub async fn get_last_card_number(&self) -> Result<u32> {

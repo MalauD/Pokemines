@@ -43,3 +43,9 @@ impl Card {
         }
     }
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct GroupedCard {
+    pub _id: u32,
+    pub cards: Vec<Card>,
+}

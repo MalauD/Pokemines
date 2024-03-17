@@ -8,7 +8,7 @@ function MyAccount() {
     const { currentUser, setCurrentUser } = React.useContext(CurrentUserContext);
     const navigate = useNavigate();
 
-    const { mail, first_name, last_name, promo, admin } = currentUser;
+    const { mail, first_name, last_name, promo, admin, account_balance } = currentUser;
 
     const logout = () => {
         Axios.post('/api/auth/logout')
@@ -43,7 +43,10 @@ function MyAccount() {
                 </Typography>
                 <Typography component="h4" variant="h6">
                     Nom : {last_name}
-                </Typography>{' '}
+                </Typography>
+                <Typography component="h4" variant="h6">
+                    Solde : {account_balance}
+                </Typography>
                 {promo ? (
                     <Typography component="h5" variant="h6">
                         Promo : {promo}

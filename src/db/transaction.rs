@@ -167,7 +167,6 @@ impl MongoClient {
         let pipeline = vec![
             doc! {
                 "$match": {
-                    "status": TransactionStatus::Waiting.to_string(),
                     "transaction_type.type":  "Marketplace"
                 }
             },

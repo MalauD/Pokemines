@@ -1,7 +1,9 @@
 import {
     Box,
     Button,
+    FormControl,
     Grid,
+    InputLabel,
     MenuItem,
     Modal,
     Paper,
@@ -35,7 +37,11 @@ export default function UserCreation() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        Axios.post('/api/auth/create_user', data)
+        Axios.post('/api/auth/create_user', {
+            ...Object.fromEntries(data),
+            account_balance: parseFloat(data.get('account_balance')),
+            password: 'password',
+        })
             .then((res) => {
                 setPassword(res.data.password);
                 setOpen(true);
@@ -89,14 +95,23 @@ export default function UserCreation() {
                         name="last_name"
                         margin="normal"
                     />
-                    <Grid container spacing={0} direction="row" margin="normal">
+                    <Grid container spacing={0} direction="row">
                         <Grid item xs={6}>
-                            <Select id="promo" autoWidth label="Promo" name="promo" margin="normal">
-                                <MenuItem value="NA">NA</MenuItem>
-                                <MenuItem value="2A">2A</MenuItem>
-                                <MenuItem value="3A">3A</MenuItem>
-                                <MenuItem value="4A">4A</MenuItem>
-                            </Select>
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel id="promo-select-label">Promo</InputLabel>
+                                <Select
+                                    id="promo"
+                                    label="Promo"
+                                    name="promo"
+                                    labelId="promo-select-label"
+                                    defaultValue="PNA"
+                                >
+                                    <MenuItem value="PNA">NA</MenuItem>
+                                    <MenuItem value="P2A">2A</MenuItem>
+                                    <MenuItem value="P3A">3A</MenuItem>
+                                    <MenuItem value="P4A">4A</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={6}>
                             <TextField
@@ -104,8 +119,9 @@ export default function UserCreation() {
                                 id="account_balance"
                                 label="Solde"
                                 name="account_balance"
-                                margin="normal"
                                 type="number"
+                                margin="normal"
+                                InputProps={{ inputProps: { min: 0 } }}
                             />
                         </Grid>
                     </Grid>

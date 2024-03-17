@@ -44,7 +44,7 @@ pub async fn upload_card(mut card_form: MultipartForm<CardReq>, user: User) -> C
 pub async fn get_card_of_user(req: web::Path<String>, _: User) -> CardResponse {
     let db = get_mongo(None).await;
     let oid = ObjectId::parse_str(req.into_inner())?;
-    let cards = db.get_card_of_user(&oid).await?;
+    let cards = db.get_card_of_user_grouped(&oid).await?;
     Ok(HttpResponse::Ok().json(cards))
 }
 
