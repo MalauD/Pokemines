@@ -12,6 +12,7 @@ import React, { useState } from 'react';
 import Axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { LineChart } from '@mui/x-charts/LineChart';
 import Card from '../Components/Cards/Card';
 import MarketPlaceTransactionList from '../Components/Transactions/MarketPlaceTransactionList';
 import CurrentUserContext from '..';
@@ -26,6 +27,7 @@ function CardPage() {
     const [allCards, setAllCards] = useState([]);
     const [ownedCards, setOwnedCards] = useState([]);
     const [sellingPrice, setSellingPrice] = useState(0);
+    const [priceHistory, setPriceHistory] = useState([]);
 
     React.useEffect(() => {
         Axios.get(`/api/card/number/${cardNumber}`).then((res) => {
@@ -37,6 +39,13 @@ function CardPage() {
                 const { data } = res2;
                 setTransactions(data);
                 setLoading(false);
+            });
+            Axios.get(`/api/transaction/number/${cardNumber}?status=Completed`).then((res2) => {
+                const p = res2.data.map((t) => ({
+                    price: t.transaction_type.price,
+                    date: new Date(t.completed_at.$date.$numberLong / 1),
+                }));
+                setPriceHistory(p.sort((a, b) => a.date.getTime() - b.date.getTime()));
             });
         });
     }, [cardNumber]);
@@ -165,6 +174,27 @@ function CardPage() {
                         />
                     </>
                 )}
+                <Typography variant="h5" gutterBottom sx={{ pt: 2 }}>
+                    Historique des prix
+                </Typography>
+                <LineChart
+                    xAxis={[
+                        {
+                            dataKey: 'date',
+                            name: 'Date',
+                            valueFormatter: (date) => date.toLocaleString(),
+                            scaleType: 'time',
+                        },
+                    ]}
+                    series={[
+                        {
+                            dataKey: 'price',
+                            name: 'Prix',
+                        },
+                    ]}
+                    dataset={priceHistory}
+                    height={300}
+                />
             </Paper>
         </Box>
     );
