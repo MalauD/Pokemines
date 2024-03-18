@@ -58,6 +58,7 @@ function CardPage() {
 
     const onTransactionCompleted = (transaction) => {
         setTransactions((prev) => prev.filter((t) => t._id !== transaction._id));
+        setOwnedCards((prev) => [...prev, transaction.transaction_type.sender_card]);
         setCurrentUser({
             ...currentUser,
             account_balance: currentUser.account_balance - transaction.transaction_type.price,
@@ -75,7 +76,7 @@ function CardPage() {
             .map((t) => t.transaction_type.sender_card._id);
         const candidates = ownedCards.filter((c) => !alreadyInMarketPlaceCards.includes(c._id));
         if (candidates.length === 0) {
-            enqueueSnackbar('Toutes vos cadres sont à vendre', { variant: 'error' });
+            enqueueSnackbar('Toutes vos cartes sont à vendre', { variant: 'error' });
             return;
         }
         Axios.post('/api/transaction/sell', {
@@ -119,7 +120,9 @@ function CardPage() {
                     onTransactionCancelled={onTransactionCancelled}
                 />
                 <Typography variant="h5" gutterBottom sx={{ pt: 2 }}>
-                    Vous possédez {ownedCards.length} exemplaires de cette carte
+                    {ownedCards.length !== 0
+                        ? `Vous possédez ${ownedCards.length} exemplaires de cette carte`
+                        : 'Vous ne possédez pas cette carte'}
                 </Typography>
                 {ownedCards.length > 0 && (
                     <>

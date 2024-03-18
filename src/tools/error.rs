@@ -45,6 +45,8 @@ pub enum CardError {
     NotFound,
     #[error("InsufficientFunds: you don't have enough money")]
     InsufficientFunds,
+    #[error("CardAlreadyInMarketplace: you cannot add a card that is already in the marketplace")]
+    CardAlreadyInMarketplace,
 }
 
 impl ResponseError for CardError {
@@ -56,6 +58,7 @@ impl ResponseError for CardError {
             Self::Deserialization(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::NotFound => StatusCode::NOT_FOUND,
             Self::InsufficientFunds => StatusCode::FORBIDDEN,
+            Self::CardAlreadyInMarketplace => StatusCode::FORBIDDEN,
         }
     }
 

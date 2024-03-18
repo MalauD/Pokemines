@@ -44,12 +44,18 @@ export default function MarketPlaceTransactionList({
                         });
                         return;
                     }
-                    Axios.post(`/api/transaction/id/${transaction._id}/pay`).then((res) => {
-                        enqueueSnackbar('Transaction effectuée avec succès', {
-                            variant: 'success',
+                    Axios.post(`/api/transaction/id/${transaction._id}/pay`)
+                        .then((res) => {
+                            enqueueSnackbar('Transaction effectuée avec succès', {
+                                variant: 'success',
+                            });
+                            onTransactionCompleted(res.data);
+                        })
+                        .catch((err) => {
+                            enqueueSnackbar('Fond insuffisant', {
+                                variant: 'error',
+                            });
                         });
-                        onTransactionCompleted(res.data);
-                    });
                 };
 
                 return (

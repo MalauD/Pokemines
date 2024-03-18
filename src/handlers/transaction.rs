@@ -98,6 +98,9 @@ pub struct SellRequest {
 pub async fn sell_card(user: User, req: web::Json<SellRequest>) -> CardResponse {
     let db = get_mongo(None).await;
     let card_id = ObjectId::parse_str(&req.card_id)?;
+    if db.user_already_selling_card(&card_id).await? {
+        return Err(CardError::CardAlreadyInMarketplace);
+    }
     let transactions = db
         .put_cards_in_marketplace(vec![card_id], req.price, user.get_id().unwrap())
         .await?;

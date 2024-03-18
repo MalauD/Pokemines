@@ -295,4 +295,18 @@ impl MongoClient {
         .await?;
         Ok(())
     }
+
+    pub async fn user_already_selling_card(&self, card_id: &ObjectId) -> Result<bool> {
+        let coll = self._database.collection::<Transaction>("Transaction");
+        let doc = coll
+            .find_one(
+                doc! {
+                    "transaction_type.sender_card": card_id,
+                    "status": TransactionStatus::Waiting.to_string()
+                },
+                None,
+            )
+            .await?;
+        Ok(doc.is_some())
+    }
 }
