@@ -1,12 +1,13 @@
-import { Box, CircularProgress, Paper, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Paper, Typography } from '@mui/material';
 import React from 'react';
 import Axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function UserAccount() {
     const [user, setUser] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(true);
     const { userId } = useParams();
+    const navigate = useNavigate();
 
     const retrieveUser = () => {
         setIsLoading(true);
@@ -51,15 +52,26 @@ function UserAccount() {
                     {first_name} {last_name}
                 </Typography>
                 {promo ? (
-                    <Typography component="h5" variant="h6">
+                    <Typography component="h5" gutterBottom variant="h6">
                         Promo : {promo}
                     </Typography>
                 ) : null}
                 {admin ? (
-                    <Typography component="h6" variant="h6">
+                    <Typography component="h6" gutterBottom variant="h6">
                         Admin
                     </Typography>
                 ) : null}
+                <Typography component="h6" gutterBottom variant="h6">
+                    Possède {user.cards.length} cartes
+                </Typography>
+                <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2, color: '#fff' }}
+                    onClick={() => navigate(`/utilisateur/${userId}/pokedex`)}
+                >
+                    Voir le pokedex
+                </Button>
             </Paper>
         </Box>
     );

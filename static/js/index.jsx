@@ -120,13 +120,15 @@ function App() {
                                     element={<ProtectedRoute Component={Marche} />}
                                 />
                                 <Route
-                                    path="/pokedex"
+                                    path="/utilisateur/:userId/pokedex/"
                                     element={<ProtectedRoute Component={Pokedex} />}
                                 />
                                 <Route
-                                    path="/leaderboard"
-                                    element={<LeaderboardPage />}
+                                    path="/pokedex/"
+                                    element={<ProtectedRoute Component={Pokedex} />}
                                 />
+
+                                <Route path="/leaderboard" element={<LeaderboardPage />} />
                                 <Route
                                     path="/transaction/:transactionId"
                                     element={<ProtectedRoute Component={Transaction} />}
