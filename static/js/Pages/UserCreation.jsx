@@ -40,7 +40,6 @@ export default function UserCreation() {
         Axios.post('/api/auth/create_user', {
             ...Object.fromEntries(data),
             account_balance: parseFloat(data.get('account_balance')),
-            password: 'password',
         })
             .then((res) => {
                 setPassword(res.data.password);
