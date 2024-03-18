@@ -23,6 +23,7 @@ import Transaction from './Pages/Transaction';
 import CardPage from './Pages/CardPage';
 import UserCreation from './Pages/UserCreation';
 import Pokedex from './Pages/Pokedex';
+import LeaderboardPage from './Pages/LeaderboardPage';
 
 Axios.defaults.withCredentials = true;
 
@@ -121,6 +122,10 @@ function App() {
                                 <Route
                                     path="/pokedex"
                                     element={<ProtectedRoute Component={Pokedex} />}
+                                />
+                                <Route
+                                    path="/leaderboard"
+                                    element={<LeaderboardPage />}
                                 />
                                 <Route
                                     path="/transaction/:transactionId"

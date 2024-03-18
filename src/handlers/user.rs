@@ -41,3 +41,14 @@ pub async fn search_user(
         .await?;
     Ok(HttpResponse::Ok().json(users))
 }
+
+#[derive(Deserialize)]
+pub struct LeaderboardQuery {
+    pub limit: Option<u32>,
+}
+
+pub async fn leaderboard(query: web::Query<LeaderboardQuery>) -> UserResponse {
+    let db = get_mongo(None).await;
+    let leaderboard = db.get_leaderboard(query.limit.unwrap_or(100)).await?;
+    Ok(HttpResponse::Ok().json(leaderboard))
+}

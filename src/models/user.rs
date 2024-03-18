@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{db::get_mongo, tools::UserError};
 
-use super::serialize_option_oid_hex;
+use super::{serialize_option_oid_hex, Card};
 
 #[derive(Debug, Deserialize, Serialize, Clone, Copy)]
 pub enum Promo {
@@ -74,6 +74,24 @@ impl From<User> for PublicUser {
             account_balance: user.account_balance,
         }
     }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct LeaderboardUser {
+    #[serde(
+        rename = "_id",
+        skip_serializing_if = "Option::is_none",
+        serialize_with = "serialize_option_oid_hex"
+    )]
+    id: Option<ObjectId>,
+    pub mail: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub promo: Option<Promo>,
+    pub admin: bool,
+    pub cards: Vec<ObjectId>,
+    pub account_balance: u32,
+    pub total_points: u32,
 }
 
 #[derive(Deserialize)]

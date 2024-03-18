@@ -1,64 +1,72 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
+import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const columns = [
-    { field: 'id', headerName: 'ID', minWidth: 90 },
-    { field: 'rk', headerName: 'Rang', minWidth: 90 },
     {
-        field: 'firstName',
+        field: 'first_name',
         headerName: 'Prénom',
-        minWidth: 150,
+        minWidth: 120,
     },
     {
-        field: 'lastName',
+        field: 'last_name',
         headerName: 'Nom',
-        minWidth: 150,
+        minWidth: 80,
     },
     {
         field: 'promo',
         headerName: 'Promo',
-        minWidth: 150,
+        minWidth: 40,
         flex: 1,
     },
     {
-        field: 'points',
+        field: 'total_points',
         headerName: 'Points',
-        width: 150,
+        width: 100,
     },
 ];
 
-const rows = [
-    { id: '1', rk: 1, lastName: 'Snow', firstName: 'Jon', promo: 'NA', points: 12500 },
-    { id: '2', rk: 2, lastName: 'Lannister', firstName: 'Cersei', promo: '2A', points: 12000 },
-    { id: '3', rk: 3, lastName: 'Lannister', firstName: 'Jaime', promo: '3A', points: 11030 },
-    { id: '4', rk: 4, lastName: 'Stark', firstName: 'Arya', promo: 'NA', points: 9100 },
-    { id: '5', rk: 5, lastName: 'Targaryen', firstName: 'Daenerys', promo: '4A', points: 8300 },
-    { id: '6', rk: 6, lastName: 'Melisandre', firstName: 'Danais', promo: 'NA', points: 5960 },
-    { id: '7', rk: 7, lastName: 'Clifford', firstName: 'Ferrara', promo: '2A', points: 5440 },
-    { id: '8', rk: 8, lastName: 'Frances', firstName: 'Rossini', promo: 'NA', points: 5240 },
-    { id: '9', rk: 9, lastName: 'Roxie', firstName: 'Harvey', promo: '3A', points: 1440 },
-];
+export default function Leaderboard({ pageSize, limit }) {
+    const [rows, setRows] = React.useState([]);
+    const navigate = useNavigate();
 
-export default function Leaderboard() {
+    React.useEffect(() => {
+        Axios.get(`/api/user/leaderboard?limit${limit}`).then((res) => {
+            setRows(res.data.filter((user) => user.total_points > 0 && user.mail !== 'admin'));
+        });
+    }, []);
+
     return (
-        <Box sx={{ height: 400, margin: 5, marginTop: 0 }}>
+        <Box sx={{ pl: '8vw', pr: '8vw', pt: '4vh', pb: '4vh', minHeight: 400 }}>
             <DataGrid
                 rows={rows}
                 columns={columns}
                 initialState={{
                     pagination: {
                         paginationModel: {
-                            pageSize: 5,
+                            pageSize,
                         },
                     },
                 }}
-                columnVisibilityModel={{
-                    id: false,
-                }}
-                pageSizeOptions={[5]}
+                disableColumnMenu
+                pageSizeOptions={[pageSize]}
                 disableRowSelectionOnClick
+                getRowId={(row) => row._id}
+                onRowClick={(row) => navigate(`/utilisateur/${row.row._id}`)}
             />
         </Box>
     );
 }
+
+Leaderboard.defaultProps = {
+    pageSize: 10,
+    limit: 100,
+};
+
+Leaderboard.propTypes = {
+    pageSize: PropTypes.number,
+    limit: PropTypes.number,
+};
