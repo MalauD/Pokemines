@@ -194,6 +194,12 @@ function CardPage() {
                     ]}
                     dataset={priceHistory}
                     height={300}
+                    yAxis={[
+                        {
+                            type: 'number',
+                            min: 0,
+                        },
+                    ]}
                 />
             </Paper>
         </Box>

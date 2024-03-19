@@ -1,7 +1,9 @@
 import {
     Box,
     Button,
+    Checkbox,
     FormControl,
+    FormControlLabel,
     Grid,
     InputLabel,
     MenuItem,
@@ -31,6 +33,7 @@ export default function UserCreation() {
     const [error, setError] = useState(null);
     const [open, setOpen] = useState(false);
     const [password, setPassword] = useState('');
+    const [admin, setAdmin] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = (event) => {
@@ -40,13 +43,14 @@ export default function UserCreation() {
         Axios.post('/api/auth/create_user', {
             ...Object.fromEntries(data),
             account_balance: parseFloat(data.get('account_balance')),
+            admin,
         })
             .then((res) => {
                 setPassword(res.data.password);
                 setOpen(true);
             })
             .catch(() => {
-                setError('Erreur lors de la création de la carte');
+                setError("Erreur lors de la création de l'utilisateur");
             });
     };
 
@@ -121,6 +125,14 @@ export default function UserCreation() {
                                 type="number"
                                 margin="normal"
                                 InputProps={{ inputProps: { min: 0 } }}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox checked={admin} onChange={() => setAdmin(!admin)} />
+                                }
+                                label="Administrateur"
                             />
                         </Grid>
                     </Grid>
