@@ -47,6 +47,8 @@ pub enum CardError {
     InsufficientFunds,
     #[error("CardAlreadyInMarketplace: you cannot add a card that is already in the marketplace")]
     CardAlreadyInMarketplace,
+    #[error("MeilisearchError: something went wrong with meilisearch")]
+    MeilisearchError(#[from] meilisearch_sdk::errors::Error),
 }
 
 impl ResponseError for CardError {
@@ -59,6 +61,7 @@ impl ResponseError for CardError {
             Self::NotFound => StatusCode::NOT_FOUND,
             Self::InsufficientFunds => StatusCode::FORBIDDEN,
             Self::CardAlreadyInMarketplace => StatusCode::FORBIDDEN,
+            Self::MeilisearchError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 

@@ -31,7 +31,8 @@ pub fn config_api(cfg: &mut web::ServiceConfig) {
                     .service(
                         web::resource("/number/{card_number}/image")
                             .route(web::get().to(get_card_image)),
-                    ),
+                    )
+                    .service(web::resource("/search").route(web::get().to(search_card))),
             )
             .service(
                 web::scope("/transaction")

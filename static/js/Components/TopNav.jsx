@@ -21,13 +21,22 @@ import useAdmin from '../Hooks/useAdmin';
 
 const drawerWidth = 240;
 
-const adminNavItems = ['Accueil', 'Leaderboard', 'Marché', 'Pokedex', 'Admin', 'Mon Compte'];
+const adminNavItems = [
+    'Accueil',
+    'Leaderboard',
+    'Marché',
+    'Pokedex',
+    'Explorer',
+    'Admin',
+    'Mon Compte',
+];
 const disconnectedNavItems = ['Accueil', 'Leaderboard', 'Connexion'];
 
 const pathLookup = {
     Accueil: '/',
     Leaderboard: '/leaderboard',
     Pokedex: '/pokedex',
+    Explorer: '/explorer',
     Marché: '/marche',
     Admin: '/admin',
     'Mon Compte': '/moi',

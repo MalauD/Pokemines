@@ -16,7 +16,7 @@ pub struct Card {
     pub strength: String,
     pub weakness: String,
     pub card_number: u32,
-    pub owner: Option<ObjectId>,
+    pub owner: ObjectId,
 }
 
 #[derive(MultipartForm)]
@@ -31,7 +31,7 @@ pub struct CardReq {
 }
 
 impl Card {
-    pub fn from_req(card: CardReq, card_number: u32) -> Self {
+    pub fn from_req(card: CardReq, card_number: u32, owner: ObjectId) -> Self {
         Card {
             id: None,
             name: card.name.to_string(),
@@ -39,7 +39,7 @@ impl Card {
             strength: card.strength.to_string(),
             weakness: card.weakness.to_string(),
             card_number,
-            owner: None,
+            owner: owner,
         }
     }
 }

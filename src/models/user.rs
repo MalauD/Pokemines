@@ -108,6 +108,7 @@ pub struct CreateUserReq {
     pub password: Option<String>,
     pub account_balance: u32,
     pub promo: Option<Promo>,
+    pub admin: bool,
 }
 
 impl User {
@@ -127,7 +128,7 @@ impl User {
             last_name: req.last_name,
             credential: hash,
             promo: req.promo,
-            admin: false,
+            admin: req.admin,
             cards: vec![],
             account_balance: req.account_balance,
         }

@@ -38,7 +38,9 @@ pub async fn get_meilisearch(config: Option<MeilisearchConfig>) -> &'static Meil
             let client = Client::new(cfg.host, cfg.api_key);
             let client = MeilisearchClient { client };
             client.init_users_index().await.unwrap();
-            info!(target: "Pokemines::meilisearch", "1/1 indexes initialized");
+            info!(target: "Pokemines::meilisearch", "1/2 indexes initialized");
+            client.init_cards_index().await.unwrap();
+            info!(target: "Pokemines::meilisearch", "2/2 indexes initialized");
             if MEILISEARCH_CLIENT.set(client).is_ok() {
                 info!(target: "Pokemines::meilisearch", "Connected to meilisearch");
                 *initialized = true;

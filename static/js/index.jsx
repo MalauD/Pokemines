@@ -24,6 +24,7 @@ import CardPage from './Pages/CardPage';
 import UserCreation from './Pages/UserCreation';
 import Pokedex from './Pages/Pokedex';
 import LeaderboardPage from './Pages/LeaderboardPage';
+import CardExplorer from './Pages/CardExplorer';
 
 Axios.defaults.withCredentials = true;
 
@@ -118,6 +119,10 @@ function App() {
                                 <Route
                                     path="/marche"
                                     element={<ProtectedRoute Component={Marche} />}
+                                />
+                                <Route
+                                    path="/explorer"
+                                    element={<ProtectedRoute Component={CardExplorer} />}
                                 />
                                 <Route
                                     path="/utilisateur/:userId/pokedex/"

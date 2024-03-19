@@ -1,13 +1,15 @@
 use actix_multipart::form::MultipartForm;
 use actix_web::{web, HttpResponse};
 use bson::oid::ObjectId;
+use serde::Deserialize;
 use serde_json::json;
 
 use crate::{
     db::get_mongo,
     models::{Card, CardReq, User},
     s3::get_s3,
-    tools::CardError,
+    search::get_meilisearch,
+    tools::{CardError, PaginationOptions},
 };
 
 use super::responses::CardResponse;
@@ -19,6 +21,7 @@ pub async fn upload_card(mut card_form: MultipartForm<CardReq>, user: User) -> C
 
     let db = get_mongo(None).await;
     let s3 = get_s3(None).await;
+    let meilisearch = get_meilisearch(None).await;
 
     let image_file = &mut card_form.image;
     let file = image_file.file.as_file_mut();
@@ -28,11 +31,17 @@ pub async fn upload_card(mut card_form: MultipartForm<CardReq>, user: User) -> C
     let number_of_card = card_form.card_count.0;
     let price = card_form.price.0;
 
-    let card = Card::from_req(card_form.into_inner(), card_number);
+    let card = Card::from_req(
+        card_form.into_inner(),
+        card_number,
+        user.get_id().unwrap().clone(),
+    );
     let card_ids = db.save_cards(&card, number_of_card).await?;
     s3.get_bucket()
         .put_object_stream(&mut async_file, format!("cards/{}", card_number))
         .await?;
+
+    meilisearch.index_cards(vec![card]).await?;
 
     // Put objects in marketplace
     db.put_cards_in_marketplace(card_ids.clone(), price, user.get_id().unwrap().clone())
@@ -64,4 +73,21 @@ pub async fn get_card_image(req: web::Path<String>) -> CardResponse {
     Ok(HttpResponse::Ok()
         .content_type("image/png")
         .body(image.to_vec()))
+}
+
+#[derive(Deserialize)]
+pub struct SearchQuery {
+    q: String,
+}
+
+pub async fn search_card(
+    _: User,
+    query: web::Query<SearchQuery>,
+    pagination: web::Query<PaginationOptions>,
+) -> CardResponse {
+    let meilisearch = get_meilisearch(None).await;
+    let cards = meilisearch
+        .search_cards(query.into_inner().q, pagination.into_inner())
+        .await?;
+    Ok(HttpResponse::Ok().json(cards))
 }

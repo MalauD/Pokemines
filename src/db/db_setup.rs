@@ -49,6 +49,7 @@ pub async fn get_mongo(mongo_url: Option<String>) -> &'static MongoClient {
             last_name: "admin".to_string(),
             password: None,
             promo: None,
+            admin: true,
             account_balance: 0,
         };
         let admin = crate::models::User::from_create_req(
