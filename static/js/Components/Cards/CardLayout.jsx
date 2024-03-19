@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Card from './Card';
 
 export default function CardLayout({ cards }) {
@@ -17,3 +18,22 @@ export default function CardLayout({ cards }) {
         </div>
     );
 }
+
+CardLayout.propTypes = {
+    cards: PropTypes.arrayOf(
+        PropTypes.shape({
+            _id: PropTypes.shape({
+                $oid: PropTypes.string,
+            }),
+            name: PropTypes.string,
+            points: PropTypes.number,
+            strength: PropTypes.string,
+            weakness: PropTypes.string,
+            card_number: PropTypes.number,
+        })
+    ),
+};
+
+CardLayout.defaultProps = {
+    cards: [],
+};

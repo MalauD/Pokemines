@@ -4,7 +4,6 @@ import {
     CircularProgress,
     Grid,
     Paper,
-    Snackbar,
     TextField,
     Typography,
 } from '@mui/material';
@@ -24,7 +23,6 @@ function CardPage() {
     const [transactions, setTransactions] = useState([]);
     const { currentUser, setCurrentUser } = React.useContext(CurrentUserContext);
     const { enqueueSnackbar } = useSnackbar();
-    const [allCards, setAllCards] = useState([]);
     const [ownedCards, setOwnedCards] = useState([]);
     const [sellingPrice, setSellingPrice] = useState(0);
     const [priceHistory, setPriceHistory] = useState([]);
@@ -32,7 +30,6 @@ function CardPage() {
     React.useEffect(() => {
         Axios.get(`/api/card/number/${cardNumber}`).then((res) => {
             setCard(res.data[0]);
-            setAllCards(res.data);
             setOwnedCards(res.data.filter((c) => c.owner.$oid === currentUser._id));
 
             Axios.get(`/api/transaction/number/${cardNumber}?status=Waiting`).then((res2) => {
@@ -90,7 +87,7 @@ function CardPage() {
         }
         Axios.post('/api/transaction/sell', {
             card_id: candidates[0]._id,
-            price: parseInt(sellingPrice),
+            price: parseInt(sellingPrice, 10),
         }).then((res) => {
             setTransactions([...transactions, res.data]);
             enqueueSnackbar('Carte mise en vente', { variant: 'success' });

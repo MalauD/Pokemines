@@ -80,7 +80,7 @@ export default function UserCreation() {
             </Modal>
             <Paper sx={{ pl: '8vw', pr: '8vw', pt: '4vh', pb: '4vh' }}>
                 <Typography component="h1" variant="h5" sx={{ mb: 2 }} align="center">
-                    Création d'un utilisateur
+                    Création d&apos;un utilisateur
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate>
                     <TextField fullWidth id="mail" label="Mail" name="mail" margin="normal" />

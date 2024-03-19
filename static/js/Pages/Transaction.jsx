@@ -1,8 +1,7 @@
-import { Box, Button, Chip, CircularProgress, Grid, Paper, Typography } from '@mui/material';
+import { Box, Chip, CircularProgress, Grid, Paper, Typography } from '@mui/material';
 import React from 'react';
 import Axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
-import CurrentUserContext from '..';
+import { useParams } from 'react-router-dom';
 
 function Transaction() {
     const { transactionId } = useParams();

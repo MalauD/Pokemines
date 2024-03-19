@@ -1,6 +1,6 @@
 import React from 'react';
 import Axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Box, Typography } from '@mui/material';
 import CardLayout from '../Components/Cards/CardLayout';
 import CurrentUserContext from '..';

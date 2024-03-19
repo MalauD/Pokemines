@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { DataGrid } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import Axios from 'axios';
@@ -51,7 +52,7 @@ export default function MarketPlaceTransactionList({
                             });
                             onTransactionCompleted(res.data);
                         })
-                        .catch((err) => {
+                        .catch(() => {
                             enqueueSnackbar('Fond insuffisant', {
                                 variant: 'error',
                             });
@@ -92,3 +93,15 @@ export default function MarketPlaceTransactionList({
         </div>
     );
 }
+
+MarketPlaceTransactionList.defaultProps = {
+    transactions: [],
+    onTransactionCompleted: () => {},
+    onTransactionCancelled: () => {},
+};
+
+MarketPlaceTransactionList.propTypes = {
+    transactions: PropTypes.arrayOf(PropTypes.shape({})),
+    onTransactionCompleted: PropTypes.func,
+    onTransactionCancelled: PropTypes.func,
+};
