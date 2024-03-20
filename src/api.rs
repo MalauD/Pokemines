@@ -49,7 +49,7 @@ pub fn config_api(cfg: &mut web::ServiceConfig) {
                         web::resource("/number/{number}")
                             .route(web::get().to(get_transaction_by_number)),
                     )
-                    .service(web::resource("/sell").route(web::post().to(sell_card))),
+                    .service(web::resource("/sell").route(web::post().to(sell_cards))),
             ),
     );
 }

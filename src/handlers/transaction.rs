@@ -91,24 +91,27 @@ pub async fn transaction_pay(user: User, req: web::Path<String>) -> CardResponse
 
 #[derive(Debug, Deserialize)]
 pub struct SellRequest {
-    card_id: String,
+    card_ids: Vec<String>,
     price: u32,
 }
 
-pub async fn sell_card(user: User, req: web::Json<SellRequest>) -> CardResponse {
+pub async fn sell_cards(user: User, req: web::Json<SellRequest>) -> CardResponse {
     let db = get_mongo(None).await;
-    let card_id = ObjectId::parse_str(&req.card_id)?;
-    if db.user_already_selling_card(&card_id).await? {
+    let price = req.price;
+    let card_ids: Vec<ObjectId> = req
+        .into_inner()
+        .card_ids
+        .into_iter()
+        .map(|x| ObjectId::parse_str(x).unwrap())
+        .collect();
+    if db.user_already_selling_cards(card_ids.clone()).await? {
         return Err(CardError::CardAlreadyInMarketplace);
     }
     let transactions = db
-        .put_cards_in_marketplace(vec![card_id], req.price, user.get_id().unwrap())
+        .put_cards_in_marketplace(card_ids, price, user.get_id().unwrap())
         .await?;
-    let transaction = db
-        .get_transaction_by_id(transactions.first().unwrap())
-        .await?
-        .ok_or(CardError::NotFound)?;
-    Ok(HttpResponse::Ok().json(transaction))
+    let transactions = db.get_transactions_by_ids(transactions).await?;
+    Ok(HttpResponse::Ok().json(transactions))
 }
 
 pub async fn transaction_cancel(user: User, req: web::Path<String>) -> CardResponse {

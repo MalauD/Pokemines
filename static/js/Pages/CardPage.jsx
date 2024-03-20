@@ -1,17 +1,10 @@
-import {
-    Box,
-    Button,
-    CircularProgress,
-    Grid,
-    Paper,
-    TextField,
-    Typography,
-} from '@mui/material';
+import { Box, Button, CircularProgress, Grid, Paper, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import Axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { LineChart } from '@mui/x-charts/LineChart';
+import { set } from 'react-hook-form';
 import Card from '../Components/Cards/Card';
 import MarketPlaceTransactionList from '../Components/Transactions/MarketPlaceTransactionList';
 import CurrentUserContext from '..';
@@ -25,7 +18,13 @@ function CardPage() {
     const { enqueueSnackbar } = useSnackbar();
     const [ownedCards, setOwnedCards] = useState([]);
     const [sellingPrice, setSellingPrice] = useState(0);
+    const [quantity, setQuantity] = useState(1);
     const [priceHistory, setPriceHistory] = useState([]);
+
+    const alreadyInMarketPlaceCards = transactions
+        .filter((t) => t.sender._id === currentUser._id)
+        .map((t) => t.transaction_type.sender_card._id);
+    const candidates = ownedCards.filter((c) => !alreadyInMarketPlaceCards.includes(c._id));
 
     React.useEffect(() => {
         Axios.get(`/api/card/number/${cardNumber}`).then((res) => {
@@ -77,20 +76,27 @@ function CardPage() {
     };
 
     const sellCard = () => {
-        const alreadyInMarketPlaceCards = transactions
-            .filter((t) => t.sender._id === currentUser._id)
-            .map((t) => t.transaction_type.sender_card._id);
-        const candidates = ownedCards.filter((c) => !alreadyInMarketPlaceCards.includes(c._id));
-        if (candidates.length === 0) {
-            enqueueSnackbar('Toutes vos cartes sont à vendre', { variant: 'error' });
+        if (sellingPrice <= 0) {
+            enqueueSnackbar('Le prix de vente doit être positif', { variant: 'error' });
+            return;
+        }
+        if (quantity <= 0) {
+            enqueueSnackbar('La quantité doit être positive', { variant: 'error' });
+            return;
+        }
+        if (candidates.length < quantity) {
+            enqueueSnackbar("Vous n'avez pas assez de cartes à vendre", { variant: 'error' });
             return;
         }
         Axios.post('/api/transaction/sell', {
-            card_id: candidates[0]._id,
+            card_ids: candidates.slice(0, quantity).map((c) => c._id),
             price: parseInt(sellingPrice, 10),
         }).then((res) => {
-            setTransactions([...transactions, res.data]);
-            enqueueSnackbar('Carte mise en vente', { variant: 'success' });
+            const newTransactions = res.data;
+            setTransactions([...transactions, ...newTransactions]);
+            enqueueSnackbar(`${newTransactions.length} cartes ajoutées au marché`, {
+                variant: 'success',
+            });
         });
     };
 
@@ -127,14 +133,14 @@ function CardPage() {
                 />
                 <Typography variant="h5" gutterBottom sx={{ pt: 2 }}>
                     {ownedCards.length !== 0
-                        ? `Vous possédez ${ownedCards.length} exemplaires de cette carte`
+                        ? `Vous possédez ${ownedCards.length} exemplaires de cette carte (dont ${candidates.length} à vendre)`
                         : 'Vous ne possédez pas cette carte'}
                 </Typography>
                 {ownedCards.length > 0 && (
                     <>
                         <Grid
                             container
-                            spacing={4}
+                            spacing={2}
                             alignItems="center"
                             justifyContent="center"
                             sx={{ mb: 2 }}
@@ -151,12 +157,23 @@ function CardPage() {
                                 />
                             </Grid>
                             <Grid item xs={5}>
+                                <TextField
+                                    label="Quantité"
+                                    variant="outlined"
+                                    fullWidth
+                                    type="number"
+                                    sx={{ mt: 2, height: '100%' }}
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={5}>
                                 <Button
                                     variant="contained"
                                     color="primary"
                                     fullWidth
                                     onClick={sellCard}
-                                    sx={{ mt: 2, color: 'white', height: '100%' }}
+                                    sx={{ mt: 0, color: 'white', height: '100%' }}
                                 >
                                     Mettre en vente
                                 </Button>

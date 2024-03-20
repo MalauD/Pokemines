@@ -23,7 +23,7 @@ export default function MarketPlaceTransactionList({
                 `${params.row?.sender.first_name} ${params.row?.sender.last_name}`,
         },
         {
-            field: 'Price',
+            field: 'price',
             headerName: 'Prix',
             minWidth: 90,
             valueGetter: (params) => params.row?.transaction_type.price,
@@ -84,9 +84,8 @@ export default function MarketPlaceTransactionList({
                 disableColumnMenu
                 getRowId={(row) => row._id}
                 initialState={{
-                    sortModel: {
-                        field: 'Price',
-                        sort: 'asc',
+                    sorting: {
+                        sortModel: [{ field: 'price', sort: 'asc' }],
                     },
                 }}
             />

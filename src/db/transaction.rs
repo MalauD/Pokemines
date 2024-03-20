@@ -221,6 +221,59 @@ impl MongoClient {
         Ok(Some(bson::from_document(doc)?))
     }
 
+    pub async fn get_transactions_by_ids(
+        &self,
+        ids: Vec<ObjectId>,
+    ) -> Result<Vec<PopulatedTransaction>> {
+        let coll = self._database.collection::<Transaction>("Transaction");
+        let pipeline = vec![
+            doc! {
+                "$match": {
+                    "transaction_type.type":  "Marketplace"
+                }
+            },
+            doc! {
+                "$match": {
+                    "_id": {"$in": ids}
+                }
+            },
+            doc! {
+                "$lookup": {
+                    "from": "Card",
+                    "localField": "transaction_type.sender_card",
+                    "foreignField": "_id",
+                    "as": "card"
+                }
+            },
+            doc! {
+                "$unwind": "$card"
+            },
+            doc! {
+                "$lookup": {
+                    "from": "User",
+                    "localField": "sender_id",
+                    "foreignField": "_id",
+                    "as": "sender"
+                }
+            },
+            doc! {
+                "$unwind": "$sender"
+            },
+            doc! {
+                "$set": {
+                    "transaction_type.sender_card": "$card"
+                }
+            },
+        ];
+
+        Ok(coll
+            .aggregate(pipeline, None)
+            .await?
+            .map(|x| bson::from_document(x.unwrap()))
+            .try_collect::<Vec<PopulatedTransaction>>()
+            .await?)
+    }
+
     pub async fn get_transactions_by_number(
         &self,
         card_number: u32,
@@ -302,6 +355,20 @@ impl MongoClient {
             .find_one(
                 doc! {
                     "transaction_type.sender_card": card_id,
+                    "status": TransactionStatus::Waiting.to_string()
+                },
+                None,
+            )
+            .await?;
+        Ok(doc.is_some())
+    }
+
+    pub async fn user_already_selling_cards(&self, card_ids: Vec<ObjectId>) -> Result<bool> {
+        let coll = self._database.collection::<Transaction>("Transaction");
+        let doc = coll
+            .find_one(
+                doc! {
+                    "transaction_type.sender_card": { "$in": card_ids},
                     "status": TransactionStatus::Waiting.to_string()
                 },
                 None,
