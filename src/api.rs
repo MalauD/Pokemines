@@ -19,7 +19,9 @@ pub fn config_api(cfg: &mut web::ServiceConfig) {
                     .service(web::resource("/search").route(web::get().to(search_user)))
                     .service(web::resource("/leaderboard").route(web::get().to(leaderboard)))
                     .service(web::resource("/{id}").route(web::get().to(get_user)))
-                    .service(web::resource("/{id}/cards").route(web::get().to(get_cards_of_user))),
+                    .service(web::resource("/{id}/cards").route(web::get().to(get_cards_of_user)))
+                    .service(web::resource("/{id}/transfer").route(web::post().to(transfer_card)))
+                    .service(web::resource("/{id}/donate").route(web::post().to(donate_to_user))),
             )
             .service(
                 web::scope("/card")

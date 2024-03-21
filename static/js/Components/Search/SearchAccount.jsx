@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
@@ -50,7 +51,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-export default function SearchAccount() {
+export default function SearchAccount({ onAccountSelected }) {
     const [open, setOpen] = React.useState(false);
     const [options, setOptions] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
@@ -95,7 +96,8 @@ export default function SearchAccount() {
             loading={loading}
             onInputChange={onInputChange}
             onChange={(event, newValue) => {
-                navigate(`/utilisateur/${newValue.id}`);
+                if (onAccountSelected) onAccountSelected(newValue);
+                else navigate(`/utilisateur/${newValue.id}`);
             }}
             renderInput={(params) => (
                 <Search ref={params.InputProps.ref}>
@@ -123,3 +125,11 @@ export default function SearchAccount() {
         />
     );
 }
+
+SearchAccount.propTypes = {
+    onAccountSelected: PropTypes.func,
+};
+
+SearchAccount.defaultProps = {
+    onAccountSelected: null,
+};

@@ -7,6 +7,7 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import Card from '../Components/Cards/Card';
 import MarketPlaceTransactionList from '../Components/Transactions/MarketPlaceTransactionList';
 import CurrentUserContext from '..';
+import SearchAccount from '../Components/Search/SearchAccount';
 
 function CardPage() {
     const { cardNumber } = useParams();
@@ -19,6 +20,7 @@ function CardPage() {
     const [sellingPrice, setSellingPrice] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [priceHistory, setPriceHistory] = useState([]);
+    const [adminSelectedUser, setAdminSelectedUser] = useState(null);
 
     const alreadyInMarketPlaceCards = transactions
         .filter((t) => t.sender._id === currentUser._id)
@@ -72,6 +74,19 @@ function CardPage() {
 
     const onTransactionCancelled = (transaction) => {
         setTransactions((prev) => prev.filter((t) => t._id !== transaction._id));
+    };
+
+    const onDonate = () => {
+        if (!adminSelectedUser) {
+            enqueueSnackbar('Veuillez sélectionner un utilisateur', { variant: 'error' });
+            return;
+        }
+        Axios.post(`/api/user/${adminSelectedUser.id}/transfer`, {
+            card_id: candidates[0]._id,
+        }).then(() => {
+            enqueueSnackbar('Carte donnée avec succès', { variant: 'success' });
+            setOwnedCards((prev) => prev.filter((c) => c._id !== candidates[0]._id));
+        });
     };
 
     const sellCard = () => {
@@ -214,6 +229,34 @@ function CardPage() {
                         },
                     ]}
                 />
+                {currentUser.admin && candidates.length > 0 ? (
+                    <>
+                        <Typography
+                            component="h1"
+                            variant="h5"
+                            sx={{ mb: 2, mt: 5 }}
+                            align="center"
+                        >
+                            Administration
+                        </Typography>
+                        <Grid container spacing={2} alignItems="center" justify="center">
+                            <Grid item xs={6}>
+                                <SearchAccount onAccountSelected={setAdminSelectedUser} />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    sx={{ color: 'white' }}
+                                    onClick={onDonate}
+                                >
+                                    Donner à{' '}
+                                    {adminSelectedUser ? adminSelectedUser.first_name : '...'}
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </>
+                ) : null}
             </Paper>
         </Box>
     );

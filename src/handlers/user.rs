@@ -52,3 +52,48 @@ pub async fn leaderboard(query: web::Query<LeaderboardQuery>) -> UserResponse {
     let leaderboard = db.get_leaderboard(query.limit.unwrap_or(100)).await?;
     Ok(HttpResponse::Ok().json(leaderboard))
 }
+
+#[derive(Deserialize)]
+pub struct Donation {
+    amount: i32,
+}
+
+pub async fn donate_to_user(
+    user: User,
+    to_user_id: web::Path<String>,
+    donation: web::Json<Donation>,
+) -> UserResponse {
+    if !user.admin {
+        return Ok(HttpResponse::Forbidden().json("You are not allowed to donate"));
+    }
+    let db = get_mongo(None).await;
+    let oid = ObjectId::parse_str(to_user_id.into_inner()).unwrap();
+    let user = db.get_user(&oid).await.unwrap().unwrap();
+    db.modify_account_balance(&oid, donation.amount).await?;
+
+    Ok(HttpResponse::Ok().finish())
+}
+
+#[derive(Deserialize)]
+pub struct TransferCard {
+    card_id: String,
+}
+
+pub async fn transfer_card(
+    user: User,
+    to_user_id: web::Path<String>,
+    card_id: web::Json<TransferCard>,
+) -> UserResponse {
+    if !user.admin {
+        return Ok(HttpResponse::Forbidden().json("You are not allowed to donate"));
+    }
+    let db = get_mongo(None).await;
+    let card_oid = ObjectId::parse_str(card_id.into_inner().card_id).unwrap();
+    let to_user_oid = ObjectId::parse_str(to_user_id.into_inner()).unwrap();
+    if db.user_already_selling_card(&card_oid).await? {
+        return Ok(HttpResponse::BadRequest().json("Card is already in the marketplace"));
+    }
+    db.transfer_card(&card_oid, &user.get_id().unwrap(), &to_user_oid)
+        .await?;
+    Ok(HttpResponse::Ok().finish())
+}
