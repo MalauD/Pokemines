@@ -86,6 +86,10 @@ function CardPage() {
         }).then(() => {
             enqueueSnackbar('Carte donnée avec succès', { variant: 'success' });
             setOwnedCards((prev) => prev.filter((c) => c._id !== candidates[0]._id));
+            setCurrentUser({
+                ...currentUser,
+                cards: currentUser.cards.filter((c) => c !== candidates[0]._id),
+            });
         });
     };
 
