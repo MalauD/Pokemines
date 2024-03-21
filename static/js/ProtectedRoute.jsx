@@ -9,7 +9,7 @@ function ProtectedRoute({ Component, ...props }) {
 
     useEffect(() => {
         if (!isConnected) {
-            navigate('/Connexion');
+            navigate('/connexion');
         }
     }, [isConnected]);
 
