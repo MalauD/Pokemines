@@ -8,7 +8,7 @@ const card_style = [
     {
         img: {
             top: '18.2%',
-            left: '11.1%',
+            left: '10.9%',
             width: '78.5cqw',
         },
         name: {
