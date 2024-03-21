@@ -78,7 +78,12 @@ export default function Card({ name, points, strength, weakness, card_number }) 
 
     return (
         <Box
-            sx={{ position: 'relative', width: '400px', containerType: 'inline-size' }}
+            sx={{
+                position: 'relative',
+                width: '90vw',
+                maxWidth: '400px',
+                containerType: 'inline-size',
+            }}
             onClick={() => navigate(`/carte/numero/${card_number}`)}
         >
             <img src={styles.backGroundPath} alt={name} style={{ width: '100%', height: 'auto' }} />
