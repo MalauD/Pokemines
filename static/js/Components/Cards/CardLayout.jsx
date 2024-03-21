@@ -1,10 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from '@emotion/styled';
 import Card from './Card';
+
+const CardContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+`;
 
 export default function CardLayout({ cards }) {
     return (
-        <div>
+        <CardContainer>
             {cards.map((card) => (
                 <Card
                     key={card._id}
@@ -15,7 +23,7 @@ export default function CardLayout({ cards }) {
                     card_number={card.card_number}
                 />
             ))}
-        </div>
+        </CardContainer>
     );
 }
 
