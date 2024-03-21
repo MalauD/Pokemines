@@ -15,9 +15,11 @@ import Button from '@mui/material/Button';
 import { AccountCircle } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import { Badge } from '@mui/material';
 import SearchAccount from './Search/SearchAccount';
 import useConnected from '../Hooks/useConnected';
 import useAdmin from '../Hooks/useAdmin';
+import CurrentUserContext from '..';
 
 const drawerWidth = 240;
 
@@ -47,6 +49,7 @@ export default function DrawerAppBar(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const isConnected = useConnected();
+    const { currentUser } = React.useContext(CurrentUserContext);
     const isAdmin = useAdmin();
     const navigate = useNavigate();
 
@@ -81,6 +84,20 @@ export default function DrawerAppBar(props) {
             </List>
         </Box>
     );
+
+    const formatAccountBalance = (balance) => {
+        if (balance === null) {
+            return '0';
+        }
+        // Use k suffix for thousands and M for millions
+        if (balance >= 1000000) {
+            return `${(balance / 1000000).toFixed(1)}M`;
+        }
+        if (balance >= 1000) {
+            return `${(balance / 1000).toFixed(1)}k`;
+        }
+        return balance;
+    };
 
     const container = window !== undefined ? () => window().document.body : undefined;
 
@@ -145,7 +162,13 @@ export default function DrawerAppBar(props) {
                                 color="inherit"
                                 onClick={() => navigate('/moi')}
                             >
-                                <AccountCircle fontSize="large" />
+                                <Badge
+                                    badgeContent={formatAccountBalance(currentUser.account_balance)}
+                                    max={10000}
+                                    color="secondary"
+                                >
+                                    <AccountCircle fontSize="large" />
+                                </Badge>
                             </IconButton>
                         </>
                     )}
