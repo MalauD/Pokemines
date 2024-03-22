@@ -20,10 +20,7 @@ export default function Pokedex() {
 
     return (
         <Box sx={{ height: 400, margin: 5, marginTop: 0 }}>
-            <Typography variant="h4" align="center" gutterBottom>
-                Pokedex
-            </Typography>
-            <CardLayout cards={cards} />
+            <CardLayout cards={cards} title="Pokedex" />
         </Box>
     );
 }

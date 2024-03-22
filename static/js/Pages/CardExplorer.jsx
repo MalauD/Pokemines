@@ -14,20 +14,20 @@ export default function CardExplorer() {
         });
     }, [search]);
 
+    const accessory = (
+        <TextField
+            id="outlined-basic"
+            label="Rechercher par nom..."
+            variant="outlined"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            sx={{ marginBottom: 2, width: '100%' }}
+        />
+    );
+
     return (
         <Box sx={{ height: 400, margin: 5, marginTop: 0 }}>
-            <Typography variant="h4" align="center" gutterBottom>
-                Explorer
-            </Typography>
-            <TextField
-                id="outlined-basic"
-                label="Search"
-                variant="outlined"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                sx={{ marginBottom: 2, width: '100%' }}
-            />
-            <CardLayout cards={cards} />
+            <CardLayout cards={cards} accessory={accessory} title="Explorer" />
         </Box>
     );
 }

@@ -18,7 +18,7 @@ export default function Marche() {
 
     return (
         <Box sx={{ height: 400, margin: 5, marginTop: 0 }}>
-            <CardLayout cards={cards} />
+            <CardLayout cards={cards} title="Marché" />
         </Box>
     );
 }
