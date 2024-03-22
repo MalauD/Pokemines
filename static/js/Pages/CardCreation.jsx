@@ -1,9 +1,22 @@
 import styled from '@emotion/styled';
 import { CloudUpload } from '@mui/icons-material';
-import { Box, Button, Grid, Paper, TextField, Typography } from '@mui/material';
+import {
+    Box,
+    Button,
+    FormControl,
+    FormHelperText,
+    Grid,
+    InputLabel,
+    MenuItem,
+    Paper,
+    Select,
+    TextField,
+    Typography,
+} from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
+import { Rarity, RarityName } from '../CardRarity';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -21,8 +34,14 @@ function CardCreation() {
     const [imagePreview, setImagePreview] = useState(null);
     const [image, setImage] = useState(null);
     const [error, setError] = useState(null);
+    const [rarityLevel, setRarityLevel] = useState(0);
 
     const navigate = useNavigate();
+
+    const cardPoints = React.useMemo(() => {
+        const rarity = Rarity[rarityLevel];
+        return Math.floor(Math.random() * (rarity.max - rarity.min) + rarity.min);
+    }, [rarityLevel]);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -38,6 +57,7 @@ function CardCreation() {
         // Send the form data to the server
         if (imagePreview !== null) {
             data.append('image', image);
+            data.append('points', cardPoints);
             Axios.post('/api/card/upload', data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -92,7 +112,7 @@ function CardCreation() {
                         rows={2}
                         label="Faiblesse de la carte"
                     />
-                    <Grid container spacing={0} direction="row" margin="normal">
+                    <Grid container spacing={1} direction="row" margin="normal">
                         <Grid item xs={4}>
                             <TextField
                                 id="card_count"
@@ -102,7 +122,22 @@ function CardCreation() {
                             />
                         </Grid>
                         <Grid item xs={4}>
-                            <TextField id="points" label="Points" type="number" name="points" />
+                            <FormControl fullWidth>
+                                <InputLabel id="select-points-label">Rareté</InputLabel>
+                                <Select
+                                    labelId="select-points-label"
+                                    id="select-points"
+                                    value={rarityLevel}
+                                    onChange={(e) => setRarityLevel(e.target.value)}
+                                    autoWidth
+                                    label="Rareté"
+                                >
+                                    {Rarity.map((_, i) => (
+                                        <MenuItem value={i}>{RarityName[i]}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>Points : {cardPoints}</FormHelperText>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={4}>
                             <TextField id="price" label="Prix" type="number" name="price" />

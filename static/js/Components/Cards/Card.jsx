@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { CardPointsToRarityIndex } from '../../CardRarity';
 
 const card_style = [
     {
@@ -10,6 +11,73 @@ const card_style = [
             top: '18.2%',
             left: '10.9%',
             width: '78.5cqw',
+            height: '8.8cqh',
+        },
+        name: {
+            top: '8.2%',
+            left: '14%',
+            fontSize: '7cqw',
+            fontFamily: 'Magical Night',
+        },
+        points: {
+            top: '8.2%',
+            left: '69%',
+            fontSize: '7cqw',
+            fontFamily: 'Magical Night',
+        },
+        strength: {
+            top: '58%',
+            left: '14%',
+            fontSize: '5cqw',
+            width: '72cqw',
+        },
+        weakness: {
+            top: '77.5%',
+            left: '14%',
+            fontSize: '5cqw',
+            width: '72cqw',
+        },
+        backGroundPath: '/Cards/card_common_front_trans.png',
+    },
+    {
+        img: {
+            top: '18.2%',
+            left: '10.9%',
+            width: '78.5cqw',
+            height: '8.8cqh',
+        },
+        name: {
+            top: '8.2%',
+            left: '14%',
+            fontSize: '7cqw',
+            fontFamily: 'Magical Night',
+        },
+        points: {
+            top: '8.2%',
+            left: '69%',
+            fontSize: '7cqw',
+            fontFamily: 'Magical Night',
+        },
+        strength: {
+            top: '58%',
+            left: '14%',
+            fontSize: '5cqw',
+            width: '72cqw',
+        },
+        weakness: {
+            top: '77.5%',
+            left: '14%',
+            fontSize: '5cqw',
+            width: '72cqw',
+        },
+        backGroundPath: '/Cards/card_common_front_trans.png',
+    },
+    {
+        img: {
+            top: '18.2%',
+            left: '10.9%',
+            width: '78.5cqw',
+            height: '8.8cqh',
         },
         name: {
             top: '8.2%',
@@ -42,6 +110,7 @@ const card_style = [
             top: '23%',
             left: '16%',
             width: '67.5cqw',
+            height: '7.6cqh',
         },
         name: {
             top: '13.8%',
@@ -74,7 +143,9 @@ const card_style = [
 export default function Card({ name, points, strength, weakness, card_number }) {
     const navigate = useNavigate();
 
-    const styles = card_style[0];
+    const rarityIndex = CardPointsToRarityIndex(points);
+
+    const styles = card_style[rarityIndex];
 
     return (
         <Box
@@ -94,6 +165,7 @@ export default function Card({ name, points, strength, weakness, card_number }) 
                     position: 'absolute',
                     color: 'white',
                     zIndex: -1,
+                    objectFit: 'cover',
                     ...styles.img,
                 }}
             />
