@@ -1,7 +1,7 @@
 import React from 'react';
 import Axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import CardLayout from '../Components/Cards/CardLayout';
 import CurrentUserContext from '..';
 
@@ -13,7 +13,7 @@ export default function Pokedex() {
     React.useEffect(() => {
         Axios.get(`/api/user/${userId || currentUser._id}/cards`).then((res) => {
             const { data } = res;
-            const cs = data.map((group) => group.cards[0]);
+            const cs = data.map((group) => ({ ...group.cards[0], count: group.cards.length }));
             setCards(cs);
         });
     }, []);

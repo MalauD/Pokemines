@@ -69,6 +69,7 @@ export default function CardLayout({ cards, title, accessory }) {
                         strength={card.strength}
                         weakness={card.weakness}
                         card_number={card.card_number}
+                        count={card.count}
                     />
                 ))}
             </CardContainer>
