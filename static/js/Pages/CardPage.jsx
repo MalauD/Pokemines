@@ -21,6 +21,7 @@ function CardPage() {
     const [quantity, setQuantity] = useState(1);
     const [priceHistory, setPriceHistory] = useState([]);
     const [adminSelectedUser, setAdminSelectedUser] = useState(null);
+    const [donationQuantity, setDonationQuantity] = useState(1);
 
     const alreadyInMarketPlaceCards = transactions
         .filter((t) => t.sender._id === currentUser._id)
@@ -81,14 +82,25 @@ function CardPage() {
             enqueueSnackbar('Veuillez sélectionner un utilisateur', { variant: 'error' });
             return;
         }
+        if (donationQuantity <= 0) {
+            enqueueSnackbar('La quantité doit être positive', { variant: 'error' });
+            return;
+        }
+        if (candidates.length < donationQuantity) {
+            enqueueSnackbar("Vous n'avez pas assez de cartes à donner", { variant: 'error' });
+            return;
+        }
+        const cardsToDonate = candidates.slice(0, donationQuantity);
         Axios.post(`/api/user/${adminSelectedUser.id}/transfer`, {
-            card_id: candidates[0]._id,
+            card_ids: cardsToDonate.map((c) => c._id),
         }).then(() => {
-            enqueueSnackbar('Carte donnée avec succès', { variant: 'success' });
-            setOwnedCards((prev) => prev.filter((c) => c._id !== candidates[0]._id));
+            enqueueSnackbar('Cartes données avec succès', { variant: 'success' });
+            setOwnedCards((prev) => prev.filter((c) => !cardsToDonate.includes(c)));
             setCurrentUser({
                 ...currentUser,
-                cards: currentUser.cards.filter((c) => c !== candidates[0]._id),
+                cards: currentUser.cards.filter(
+                    (c) => !cardsToDonate.map((cD) => cD._id).includes(c)
+                ),
             });
         });
     };
@@ -244,10 +256,21 @@ function CardPage() {
                             Administration
                         </Typography>
                         <Grid container spacing={2} alignItems="center" justify="center">
-                            <Grid item xs={6}>
+                            <Grid item xs={4}>
                                 <SearchAccount onAccountSelected={setAdminSelectedUser} />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Quantité"
+                                    variant="outlined"
+                                    fullWidth
+                                    type="number"
+                                    sx={{ mt: 2 }}
+                                    value={donationQuantity}
+                                    onChange={(e) => setDonationQuantity(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
                                 <Button
                                     fullWidth
                                     variant="contained"

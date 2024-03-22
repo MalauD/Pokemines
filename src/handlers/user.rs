@@ -76,10 +76,10 @@ pub async fn donate_to_user(
 
 #[derive(Deserialize)]
 pub struct TransferCard {
-    card_id: String,
+    card_ids: Vec<String>,
 }
 
-pub async fn transfer_card(
+pub async fn transfer_cards(
     user: User,
     to_user_id: web::Path<String>,
     card_id: web::Json<TransferCard>,
@@ -88,12 +88,16 @@ pub async fn transfer_card(
         return Ok(HttpResponse::Forbidden().json("You are not allowed to donate"));
     }
     let db = get_mongo(None).await;
-    let card_oid = ObjectId::parse_str(card_id.into_inner().card_id).unwrap();
+    let cards_oid: Vec<ObjectId> = card_id
+        .card_ids
+        .iter()
+        .map(|id| ObjectId::parse_str(id).unwrap())
+        .collect();
     let to_user_oid = ObjectId::parse_str(to_user_id.into_inner()).unwrap();
-    if db.user_already_selling_card(&card_oid).await? {
-        return Ok(HttpResponse::BadRequest().json("Card is already in the marketplace"));
+    if db.user_already_selling_cards(cards_oid.clone()).await? {
+        return Ok(HttpResponse::BadRequest().json("Cards are already in the marketplace"));
     }
-    db.transfer_card(&card_oid, &user.get_id().unwrap(), &to_user_oid)
+    db.transfer_cards(&cards_oid, &user.get_id().unwrap(), &to_user_oid)
         .await?;
     Ok(HttpResponse::Ok().finish())
 }

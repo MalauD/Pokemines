@@ -115,4 +115,33 @@ impl MongoClient {
             .await?;
         Ok(())
     }
+
+    pub async fn transfer_cards(
+        &self,
+        cards: &Vec<ObjectId>,
+        sender: &ObjectId,
+        receiver: &ObjectId,
+    ) -> Result<()> {
+        let coll = self._database.collection::<Card>("Card");
+        coll.update_many(
+            doc! {"_id": {"$in": cards}},
+            doc! {"$set": {"owner": receiver}},
+            None,
+        )
+        .await?;
+        let coll = self._database.collection::<User>("User");
+        coll.update_one(
+            doc! {"_id": receiver},
+            doc! {"$push": {"cards": {"$each": cards}}},
+            None,
+        )
+        .await?;
+        coll.update_one(
+            doc! {"_id": sender},
+            doc! {"$pull": {"cards": {"$in": cards}}},
+            None,
+        )
+        .await?;
+        Ok(())
+    }
 }
