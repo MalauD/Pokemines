@@ -1,6 +1,6 @@
 import React from 'react';
 import Axios from 'axios';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import CardLayout from '../Components/Cards/CardLayout';
 
 export default function CardExplorer() {

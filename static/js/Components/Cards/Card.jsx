@@ -246,10 +246,12 @@ Card.propTypes = {
     card_number: PropTypes.number,
     count: PropTypes.number,
     image: PropTypes.string,
+    sx: PropTypes.shape({}),
 };
 
 Card.defaultProps = {
     card_number: null,
     count: null,
     image: null,
+    sx: {},
 };

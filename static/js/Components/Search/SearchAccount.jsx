@@ -134,10 +134,12 @@ SearchAccount.propTypes = {
     onAccountSelected: PropTypes.func,
     onFocusLost: PropTypes.func,
     autoFocus: PropTypes.bool,
+    sx: PropTypes.shape({}),
 };
 
 SearchAccount.defaultProps = {
     onAccountSelected: null,
     onFocusLost: () => {},
     autoFocus: false,
+    sx: {},
 };
