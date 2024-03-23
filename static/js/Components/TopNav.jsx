@@ -12,10 +12,12 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
-import { AccountCircle } from '@mui/icons-material';
+import SearchIcon from '@mui/icons-material/Search';
+import { AccountCircle, Search } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { Badge } from '@mui/material';
+import { Badge, useMediaQuery, useTheme } from '@mui/material';
+import { set } from 'react-hook-form';
 import SearchAccount from './Search/SearchAccount';
 import useConnected from '../Hooks/useConnected';
 import useAdmin from '../Hooks/useAdmin';
@@ -48,7 +50,9 @@ const pathLookup = {
 export default function DrawerAppBar(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
+    const [searchOpen, setSearchOpen] = React.useState(false);
     const isConnected = useConnected();
+    const isXs = useMediaQuery((theme) => theme.breakpoints.down('sm'));
     const { currentUser } = React.useContext(CurrentUserContext);
     const isAdmin = useAdmin();
     const navigate = useNavigate();
@@ -99,8 +103,12 @@ export default function DrawerAppBar(props) {
         return balance;
     };
 
+    React.useEffect(() => {
+        setSearchOpen(!isXs);
+    }, [isXs]);
     const container = window !== undefined ? () => window().document.body : undefined;
 
+    const showAccount = (isXs && !searchOpen) || !isXs;
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -149,27 +157,53 @@ export default function DrawerAppBar(props) {
                     {isConnected && (
                         <>
                             <Box sx={{ marginLeft: 'auto' }}>
-                                <SearchAccount />
+                                {!searchOpen && (
+                                    <IconButton
+                                        sx={{
+                                            height: 55,
+                                            width: 55,
+                                            display: { xs: 'flex', sm: 'none' },
+                                            alignItems: 'center',
+                                        }}
+                                        size="large"
+                                        color="inherit"
+                                        onClick={() => setSearchOpen(true)}
+                                    >
+                                        <SearchIcon />
+                                    </IconButton>
+                                )}
+                                {searchOpen && (
+                                    <SearchAccount
+                                        autoFocus={isXs}
+                                        onFocusLost={() => {
+                                            if (isXs) setSearchOpen(false);
+                                        }}
+                                    />
+                                )}
                             </Box>
-                            <IconButton
-                                sx={{
-                                    height: 55,
-                                    width: 55,
-                                    display: { xs: 'none', sm: 'none', md: 'flex' },
-                                    alignItems: 'center',
-                                }}
-                                size="large"
-                                color="inherit"
-                                onClick={() => navigate('/moi')}
-                            >
-                                <Badge
-                                    badgeContent={formatAccountBalance(currentUser.account_balance)}
-                                    max={10000}
-                                    color="secondary"
+                            {showAccount && (
+                                <IconButton
+                                    sx={{
+                                        height: 55,
+                                        width: 55,
+                                        display: { md: 'flex' },
+                                        alignItems: 'center',
+                                    }}
+                                    size="large"
+                                    color="inherit"
+                                    onClick={() => navigate('/moi')}
                                 >
-                                    <AccountCircle fontSize="large" />
-                                </Badge>
-                            </IconButton>
+                                    <Badge
+                                        badgeContent={formatAccountBalance(
+                                            currentUser.account_balance
+                                        )}
+                                        max={10000}
+                                        color="secondary"
+                                    >
+                                        <AccountCircle fontSize="large" />
+                                    </Badge>
+                                </IconButton>
+                            )}
                         </>
                     )}
                 </Toolbar>

@@ -51,7 +51,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-export default function SearchAccount({ onAccountSelected }) {
+export default function SearchAccount({ onAccountSelected, onFocusLost, autoFocus, sx }) {
     const [open, setOpen] = React.useState(false);
     const [options, setOptions] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
@@ -80,6 +80,7 @@ export default function SearchAccount({ onAccountSelected }) {
                 maxWidth: 300,
                 color: 'inherit',
                 borderColor: 'inherit',
+                ...sx,
             }}
             open={open}
             onOpen={() => {
@@ -96,6 +97,7 @@ export default function SearchAccount({ onAccountSelected }) {
             loading={loading}
             onInputChange={onInputChange}
             onChange={(event, newValue) => {
+                onFocusLost();
                 if (onAccountSelected) onAccountSelected(newValue);
                 else navigate(`/utilisateur/${newValue.id}`);
             }}
@@ -106,6 +108,8 @@ export default function SearchAccount({ onAccountSelected }) {
                     </SearchIconWrapper>
                     <StyledInputBase
                         placeholder="Cherche un mineur"
+                        onBlur={onFocusLost}
+                        autoFocus={autoFocus}
                         inputProps={{ ...params.inputProps, 'aria-label': 'search' }}
                     />
                 </Search>
@@ -128,8 +132,12 @@ export default function SearchAccount({ onAccountSelected }) {
 
 SearchAccount.propTypes = {
     onAccountSelected: PropTypes.func,
+    onFocusLost: PropTypes.func,
+    autoFocus: PropTypes.bool,
 };
 
 SearchAccount.defaultProps = {
     onAccountSelected: null,
+    onFocusLost: () => {},
+    autoFocus: false,
 };
