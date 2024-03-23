@@ -72,6 +72,7 @@ pub async fn get_card_image(req: web::Path<String>) -> CardResponse {
 
     Ok(HttpResponse::Ok()
         .content_type("image/png")
+        .append_header(("Cache-Control", "max-age=7200"))
         .body(image.to_vec()))
 }
 
