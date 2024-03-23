@@ -3,7 +3,9 @@ import { CloudUpload } from '@mui/icons-material';
 import {
     Box,
     Button,
+    Checkbox,
     FormControl,
+    FormControlLabel,
     FormHelperText,
     Grid,
     InputLabel,
@@ -38,6 +40,7 @@ function CardCreation() {
     const [cardName, setCardName] = useState('');
     const [cardStrength, setCardStrength] = useState('');
     const [cardWeakness, setCardWeakness] = useState('');
+    const [cardInMarketPlace, setCardInMarketPlace] = useState(true);
     const [rarityLevel, setRarityLevel] = useState(0);
 
     const navigate = useNavigate();
@@ -64,13 +67,14 @@ function CardCreation() {
             data.append('points', cardPoints);
             data.append('card_count', RarityQuantity[rarityLevel]);
             data.append('price', RarityPrice[rarityLevel]);
+            data.append('card_in_marketplace', cardInMarketPlace);
             Axios.post('/api/card/upload', data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             })
-                .then(() => {
-                    navigate('/admin');
+                .then((res) => {
+                    navigate(`/carte/numero/${res.data.card_number}`);
                 })
                 .catch(() => {
                     setError('Erreur lors de la création de la carte');
@@ -144,6 +148,16 @@ function CardCreation() {
                             {RarityPrice[rarityLevel]}
                         </FormHelperText>
                     </FormControl>
+                    <FormControlLabel
+                        margin="normal"
+                        control={
+                            <Checkbox
+                                checked={cardInMarketPlace}
+                                onChange={() => setCardInMarketPlace((prev) => !prev)}
+                            />
+                        }
+                        label={`Mettre les ${RarityQuantity[rarityLevel]} cartes sur le marché`}
+                    />
                     <Button
                         component="label"
                         role={undefined}

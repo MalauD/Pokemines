@@ -30,6 +30,7 @@ pub async fn upload_card(mut card_form: MultipartForm<CardReq>, user: User) -> C
     let card_number = db.get_last_card_number().await? + 1;
     let number_of_card = card_form.card_count.0;
     let price = card_form.price.0;
+    let card_in_marketplace = card_form.card_in_marketplace.0;
 
     let card = Card::from_req(
         card_form.into_inner(),
@@ -43,11 +44,12 @@ pub async fn upload_card(mut card_form: MultipartForm<CardReq>, user: User) -> C
 
     meilisearch.index_cards(vec![card]).await?;
 
-    // Put objects in marketplace
-    db.put_cards_in_marketplace(card_ids.clone(), price, user.get_id().unwrap().clone())
-        .await?;
+    if card_in_marketplace {
+        db.put_cards_in_marketplace(card_ids.clone(), price, user.get_id().unwrap().clone())
+            .await?;
+    }
 
-    Ok(HttpResponse::Ok().json(json!({ "ids": card_ids })))
+    Ok(HttpResponse::Ok().json(json!({ "ids": card_ids, "card_number": card_number })))
 }
 
 pub async fn get_cards_of_user(req: web::Path<String>, _: User) -> CardResponse {

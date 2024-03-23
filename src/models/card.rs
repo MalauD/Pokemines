@@ -44,6 +44,7 @@ pub struct CardReq {
     pub image: TempFile,
     pub card_count: Text<u32>,
     pub price: Text<u32>,
+    pub card_in_marketplace: Text<bool>,
 }
 
 impl Card {
@@ -55,7 +56,7 @@ impl Card {
             strength: card.strength.to_string(),
             weakness: card.weakness.to_string(),
             card_number,
-            owner: owner,
+            owner,
         }
     }
 }
