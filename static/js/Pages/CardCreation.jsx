@@ -16,7 +16,8 @@ import {
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
-import { Rarity, RarityName } from '../CardRarity';
+import { Rarity, RarityName, RarityPrice, RarityQuantity } from '../CardRarity';
+import Card from '../Components/Cards/Card';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -34,6 +35,9 @@ function CardCreation() {
     const [imagePreview, setImagePreview] = useState(null);
     const [image, setImage] = useState(null);
     const [error, setError] = useState(null);
+    const [cardName, setCardName] = useState('');
+    const [cardStrength, setCardStrength] = useState('');
+    const [cardWeakness, setCardWeakness] = useState('');
     const [rarityLevel, setRarityLevel] = useState(0);
 
     const navigate = useNavigate();
@@ -58,6 +62,8 @@ function CardCreation() {
         if (imagePreview !== null) {
             data.append('image', image);
             data.append('points', cardPoints);
+            data.append('card_count', RarityQuantity[rarityLevel]);
+            data.append('price', RarityPrice[rarityLevel]);
             Axios.post('/api/card/upload', data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -92,6 +98,9 @@ function CardCreation() {
                         label="Nom de la carte"
                         name="name"
                         margin="normal"
+                        autoFocus
+                        value={cardName}
+                        onChange={(e) => setCardName(e.target.value)}
                     />
 
                     <TextField
@@ -102,6 +111,8 @@ function CardCreation() {
                         multiline
                         rows={2}
                         label="Force de la carte"
+                        value={cardStrength}
+                        onChange={(e) => setCardStrength(e.target.value)}
                     />
                     <TextField
                         fullWidth
@@ -111,38 +122,28 @@ function CardCreation() {
                         multiline
                         rows={2}
                         label="Faiblesse de la carte"
+                        value={cardWeakness}
+                        onChange={(e) => setCardWeakness(e.target.value)}
                     />
-                    <Grid container spacing={1} direction="row" margin="normal">
-                        <Grid item xs={4}>
-                            <TextField
-                                id="card_count"
-                                label="Exemplaires"
-                                type="number"
-                                name="card_count"
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <FormControl fullWidth>
-                                <InputLabel id="select-points-label">Rareté</InputLabel>
-                                <Select
-                                    labelId="select-points-label"
-                                    id="select-points"
-                                    value={rarityLevel}
-                                    onChange={(e) => setRarityLevel(e.target.value)}
-                                    autoWidth
-                                    label="Rareté"
-                                >
-                                    {Rarity.map((_, i) => (
-                                        <MenuItem value={i}>{RarityName[i]}</MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Points : {cardPoints}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <TextField id="price" label="Prix" type="number" name="price" />
-                        </Grid>
-                    </Grid>
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="select-points-label">Rareté</InputLabel>
+                        <Select
+                            labelId="select-points-label"
+                            id="select-points"
+                            value={rarityLevel}
+                            onChange={(e) => setRarityLevel(e.target.value)}
+                            autoWidth
+                            label="Rareté"
+                        >
+                            {Rarity.map((_, i) => (
+                                <MenuItem value={i}>{RarityName[i]}</MenuItem>
+                            ))}
+                        </Select>
+                        <FormHelperText>
+                            Points : {cardPoints}, Exemplaires: {RarityQuantity[rarityLevel]}, Prix:{' '}
+                            {RarityPrice[rarityLevel]}
+                        </FormHelperText>
+                    </FormControl>
                     <Button
                         component="label"
                         role={undefined}
@@ -150,7 +151,8 @@ function CardCreation() {
                         variant="contained"
                         tabIndex={-1}
                         startIcon={<CloudUpload />}
-                        sx={{ mt: 2, color: 'white' }}
+                        margin="normal"
+                        sx={{ color: 'white' }}
                     >
                         Charger une image
                         <VisuallyHiddenInput
@@ -161,11 +163,24 @@ function CardCreation() {
                         />
                     </Button>
                     {imagePreview && (
-                        <img
-                            src={imagePreview}
-                            alt="Preview"
-                            style={{ width: '100%', marginTop: '1rem' }}
-                        />
+                        <Grid
+                            container
+                            direction="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{ mt: 2 }}
+                        >
+                            <Grid item>
+                                <Card
+                                    name={cardName}
+                                    strength={cardStrength}
+                                    weakness={cardWeakness}
+                                    points={cardPoints}
+                                    image={imagePreview}
+                                    count={RarityQuantity[rarityLevel]}
+                                />
+                            </Grid>
+                        </Grid>
                     )}
                     <Button
                         type="submit"

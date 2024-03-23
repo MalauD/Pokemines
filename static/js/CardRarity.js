@@ -12,6 +12,20 @@ const RarityName = [
     "Aberrante"
 ];
 
+const RarityQuantity = [
+    20,
+    10,
+    5,
+    2
+];
+
+const RarityPrice = [
+    100,
+    250,
+    500,
+    2000
+];
+
 const CardPointsToRarityIndex = (points) => {
     for (let i = 0; i < Rarity.length; i++) {
         if (points >= Rarity[i].min && points < Rarity[i].max) {
@@ -21,4 +35,4 @@ const CardPointsToRarityIndex = (points) => {
     return -1;
 }
 
-export { Rarity, RarityName,CardPointsToRarityIndex };
+export { Rarity, RarityName,CardPointsToRarityIndex, RarityQuantity, RarityPrice };

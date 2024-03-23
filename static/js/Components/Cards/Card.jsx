@@ -152,7 +152,7 @@ const card_style = [
     },
 ];
 
-export default function Card({ name, points, strength, weakness, card_number, count }) {
+export default function Card({ name, points, strength, weakness, card_number, count, image, sx }) {
     const navigate = useNavigate();
 
     const rarityIndex = CardPointsToRarityIndex(points);
@@ -166,12 +166,13 @@ export default function Card({ name, points, strength, weakness, card_number, co
                 width: '90vw',
                 maxWidth: '400px',
                 containerType: 'inline-size',
+                ...sx,
             }}
             onClick={() => navigate(`/carte/numero/${card_number}`)}
         >
             <img src={styles.backGroundPath} alt={name} style={{ width: '100%', height: 'auto' }} />
             <img
-                src={`/api/card/number/${card_number}/image`}
+                src={image || `/api/card/number/${card_number}/image`}
                 alt={name}
                 style={{
                     position: 'absolute',
@@ -242,10 +243,13 @@ Card.propTypes = {
     points: PropTypes.number.isRequired,
     strength: PropTypes.string.isRequired,
     weakness: PropTypes.string.isRequired,
-    card_number: PropTypes.number.isRequired,
+    card_number: PropTypes.number,
     count: PropTypes.number,
+    image: PropTypes.string,
 };
 
 Card.defaultProps = {
+    card_number: null,
     count: null,
+    image: null,
 };
