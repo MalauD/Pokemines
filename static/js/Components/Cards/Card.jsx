@@ -11,7 +11,7 @@ const card_style = [
             top: '18.2%',
             left: '10.9%',
             width: '78.5cqw',
-            height: '8.8cqh',
+            height: '49.8cqw',
         },
         name: {
             top: '8.2%',
@@ -47,7 +47,7 @@ const card_style = [
             top: '18.2%',
             left: '10.9%',
             width: '78.5cqw',
-            height: '8.8cqh',
+            height: '49.8cqw',
         },
         name: {
             top: '8.2%',
@@ -83,7 +83,7 @@ const card_style = [
             top: '18.2%',
             left: '10.9%',
             width: '78.5cqw',
-            height: '8.8cqh',
+            height: '49.8cqw',
         },
         name: {
             top: '8.2%',
@@ -119,7 +119,7 @@ const card_style = [
             top: '23%',
             left: '16%',
             width: '67.5cqw',
-            height: '7.6cqh',
+            height: '43.8cqw',
         },
         name: {
             top: '13.8%',
@@ -134,13 +134,13 @@ const card_style = [
             fontFamily: 'airstrikeacad',
         },
         strength: {
-            top: '55%',
+            top: '56%',
             left: '18%',
             fontSize: '5cqw',
             width: '66cqw',
         },
         weakness: {
-            top: '72%',
+            top: '74%',
             left: '18%',
             fontSize: '5cqw',
             width: '66cqw',
