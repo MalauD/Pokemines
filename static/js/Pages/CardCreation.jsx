@@ -40,6 +40,7 @@ function CardCreation() {
     const [cardName, setCardName] = useState('');
     const [cardStrength, setCardStrength] = useState('');
     const [cardWeakness, setCardWeakness] = useState('');
+    const [loadingCreation, setLoadingCreation] = useState(false);
     const [cardInMarketPlace, setCardInMarketPlace] = useState(true);
     const [rarityLevel, setRarityLevel] = useState(0);
 
@@ -59,10 +60,12 @@ function CardCreation() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+
         // Create multipart form data
         const data = new FormData(event.currentTarget);
         // Send the form data to the server
         if (imagePreview !== null) {
+            setLoadingCreation(true);
             data.append('image', image);
             data.append('points', cardPoints);
             data.append('card_count', RarityQuantity[rarityLevel]);
@@ -74,9 +77,11 @@ function CardCreation() {
                 },
             })
                 .then((res) => {
+                    setLoadingCreation(false);
                     navigate(`/carte/numero/${res.data.card_number}`);
                 })
                 .catch(() => {
+                    setLoadingCreation(false);
                     setError('Erreur lors de la création de la carte');
                 });
         }
@@ -201,6 +206,7 @@ function CardCreation() {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, color: 'white' }}
+                        disabled={loadingCreation}
                     >
                         Créer
                     </Button>
