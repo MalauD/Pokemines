@@ -18,7 +18,7 @@ export default function MarketPlaceTransactionList({
         {
             field: 'sender',
             headerName: 'Vendeur',
-            minWidth: 120,
+            flex: 1,
             valueGetter: (params) =>
                 `${params.row?.sender.first_name} ${params.row?.sender.last_name}`,
         },
