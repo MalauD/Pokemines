@@ -8,11 +8,26 @@ import Card from '../Components/Cards/Card';
 import MarketPlaceTransactionList from '../Components/Transactions/MarketPlaceTransactionList';
 import CurrentUserContext from '..';
 import SearchAccount from '../Components/Search/SearchAccount';
+import MarketPlaceCardOwners from '../Components/Transactions/MarketPlaceCardOwners';
+
+const groupCardByUser = (cards) => {
+    const grouped = {};
+    cards.forEach((card) => {
+        if (!grouped[card.owner._id]) {
+            grouped[card.owner._id] = {
+                owner: card.owner,
+                quantity: 0,
+            };
+        }
+        grouped[card.owner._id].quantity += 1;
+    });
+    return Object.values(grouped);
+};
 
 function CardPage() {
     const { cardNumber } = useParams();
     const [loading, setLoading] = useState(true);
-    const [card, setCard] = useState({});
+    const [cards, setCards] = useState({});
     const [transactions, setTransactions] = useState([]);
     const { currentUser, setCurrentUser } = React.useContext(CurrentUserContext);
     const { enqueueSnackbar } = useSnackbar();
@@ -30,8 +45,8 @@ function CardPage() {
 
     React.useEffect(() => {
         Axios.get(`/api/card/number/${cardNumber}`).then((res) => {
-            setCard(res.data[0]);
-            setOwnedCards(res.data.filter((c) => c.owner.$oid === currentUser._id));
+            setCards(res.data);
+            setOwnedCards(res.data.filter((c) => c.owner._id === currentUser._id));
 
             Axios.get(`/api/transaction/number/${cardNumber}?status=Waiting`).then((res2) => {
                 const { data } = res2;
@@ -152,7 +167,7 @@ function CardPage() {
                     alignItems: 'center',
                 }}
             >
-                <Card {...card} />
+                <Card {...cards[0]} />
                 <Typography variant="h5" gutterBottom sx={{ pt: 2 }}>
                     Ventes sur le marché
                 </Typography>
@@ -245,6 +260,10 @@ function CardPage() {
                         },
                     ]}
                 />
+                <Typography variant="h5" gutterBottom sx={{ pt: 2 }}>
+                    Propriétaires
+                </Typography>
+                <MarketPlaceCardOwners cards={groupCardByUser(cards)} />
                 {currentUser.admin && candidates.length > 0 ? (
                     <>
                         <Typography
