@@ -1,3 +1,5 @@
+use std::num::NonZeroU32;
+
 use actix_multipart::form::MultipartForm;
 use actix_web::{web, HttpResponse};
 use bson::oid::ObjectId;
@@ -9,7 +11,7 @@ use crate::{
     models::{Card, CardReq, User},
     s3::get_s3,
     search::get_meilisearch,
-    tools::{CardError, PaginationOptions},
+    tools::{resize_image, CardError, PaginationOptions},
 };
 
 use super::responses::CardResponse;
@@ -24,8 +26,9 @@ pub async fn upload_card(mut card_form: MultipartForm<CardReq>, user: User) -> C
     let meilisearch = get_meilisearch(None).await;
 
     let image_file = &mut card_form.image;
-    let file = image_file.file.as_file_mut();
-    let mut async_file = tokio::fs::File::from_std(file.try_clone().unwrap());
+    let resized_image = resize_image(image_file.file.path(), NonZeroU32::new(500).unwrap());
+    // Remove tmp file
+    std::fs::remove_file(image_file.file.path()).unwrap();
 
     let card_number = db.get_last_card_number().await? + 1;
     let number_of_card = card_form.card_count.0;
@@ -39,7 +42,11 @@ pub async fn upload_card(mut card_form: MultipartForm<CardReq>, user: User) -> C
     );
     let card_ids = db.save_cards(&card, number_of_card).await?;
     s3.get_bucket()
-        .put_object_stream(&mut async_file, format!("cards/{}", card_number))
+        .put_object_with_content_type(
+            format!("cards/{}.webp", card_number),
+            &resized_image,
+            "image/webp",
+        )
         .await?;
 
     meilisearch.index_cards(vec![card]).await?;
@@ -69,11 +76,11 @@ pub async fn get_card_image(req: web::Path<String>) -> CardResponse {
     let s3 = get_s3(None).await;
     let image = s3
         .get_bucket()
-        .get_object(format!("cards/{}", req.into_inner()))
+        .get_object(format!("cards/{}.webp", req.into_inner()))
         .await?;
 
     Ok(HttpResponse::Ok()
-        .content_type("image/png")
+        .content_type("image/webp")
         .append_header(("Cache-Control", "max-age=7200"))
         .body(image.to_vec()))
 }
