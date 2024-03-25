@@ -16,7 +16,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { AccountCircle } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { Badge, Typography, useMediaQuery } from '@mui/material';
+import { Badge, useMediaQuery } from '@mui/material';
 import SearchAccount from './Search/SearchAccount';
 import useConnected from '../Hooks/useConnected';
 import useAdmin from '../Hooks/useAdmin';
