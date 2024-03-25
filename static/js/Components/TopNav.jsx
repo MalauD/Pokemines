@@ -158,10 +158,13 @@ export default function DrawerAppBar(props) {
                             {showAccount && (
                                 <Button
                                     sx={{
-                                        color: '#fff',
+                                        color: '#000',
+                                        borderRadius: 50,
+                                        backgroundColor: '#fff',
                                         marginLeft: 'auto',
                                         pointerEvents: 'none',
                                     }}
+                                    variant="outlined"
                                 >
                                     {formatAccountBalance(currentUser.account_balance)} MNO$
                                 </Button>
