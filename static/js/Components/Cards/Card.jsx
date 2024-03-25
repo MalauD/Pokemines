@@ -37,7 +37,7 @@ const card_style = [
             fontSize: '5cqw',
             width: '72cqw',
         },
-        backGroundPath: '/Cards/card_common_front_trans.png',
+        backGroundPath: '/Cards/card_common_front_trans.webp',
     },
     {
         img: {
@@ -70,7 +70,7 @@ const card_style = [
             fontSize: '5cqw',
             width: '59cqw',
         },
-        backGroundPath: '/Cards/card_rare_front_trans.png',
+        backGroundPath: '/Cards/card_rare_front_trans.webp',
     },
     {
         img: {
@@ -103,7 +103,7 @@ const card_style = [
             fontSize: '5cqw',
             width: '66cqw',
         },
-        backGroundPath: '/Cards/card_epique_front_trans.png',
+        backGroundPath: '/Cards/card_epique_front_trans.webp',
     },
     {
         img: {
@@ -144,7 +144,7 @@ const card_style = [
             fontSize: '5cqw',
             width: '55cqw',
         },
-        backGroundPath: '/Cards/card_legendary_front_trans.png',
+        backGroundPath: '/Cards/card_legendary_front_trans.webp',
     },
 ];
 

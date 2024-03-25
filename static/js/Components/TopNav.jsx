@@ -70,9 +70,22 @@ export default function DrawerAppBar(props) {
     const navItemsDrawer = [...navItems, 'Mon Compte'];
 
     const drawer = (
-        <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-            <img src="/android-chrome-512x512.png" alt="Logo" style={{ height: 192 }} />
-            <Divider />
+        <Box
+            onClick={handleDrawerToggle}
+            sx={{
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                height: '100%',
+            }}
+        >
+            <img
+                src="/android-chrome-512x512.webp"
+                alt="Logo"
+                style={{ height: 192, width: 192, marginTop: 10, marginBottom: 10 }}
+            />
+            <Divider sx={{ width: '100%' }} />
             <List>
                 {navItemsDrawer.map((item) => (
                     <ListItem key={item} disablePadding>
@@ -85,6 +98,24 @@ export default function DrawerAppBar(props) {
                     </ListItem>
                 ))}
             </List>
+            <Box
+                sx={{
+                    display: 'flex',
+                    height: '100%',
+                    flex: 'auto',
+                    marginBottom: 1,
+                }}
+                alignItems="end"
+                justifyContent="center"
+            >
+                <img
+                    src="/pokemines_logo.webp"
+                    alt="Logo"
+                    style={{
+                        width: '200px',
+                    }}
+                />
+            </Box>
         </Box>
     );
 
@@ -131,7 +162,7 @@ export default function DrawerAppBar(props) {
                         justifyContent="center"
                     >
                         <img
-                            src="/android-chrome-192x192.png"
+                            src="/android-chrome-192x192.webp"
                             alt="Logo"
                             style={{
                                 height: '100%',
