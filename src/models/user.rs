@@ -92,6 +92,7 @@ pub struct LeaderboardUser {
     pub cards: Vec<ObjectId>,
     pub account_balance: u32,
     pub total_points: u32,
+    pub rank: u32,
 }
 
 #[derive(Deserialize)]

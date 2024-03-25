@@ -53,7 +53,7 @@ function UserAccount() {
         });
     };
 
-    const { first_name, last_name, promo, admin } = user;
+    const { first_name, last_name, promo, admin, account_balance, rank } = user;
 
     return (
         <Box
@@ -69,7 +69,11 @@ function UserAccount() {
                     {first_name} {last_name}
                 </Typography>
                 <Typography component="h5" gutterBottom variant="h6">
-                    Argent : {user.account_balance} MNO$
+                    Argent : {account_balance} MNO$
+                </Typography>
+                <Typography component="h5" gutterBottom variant="h6">
+                    Rang : {rank}
+                    {rank === 1 ? 'er' : 'ème'}
                 </Typography>
                 {promo ? (
                     <Typography component="h5" gutterBottom variant="h6">

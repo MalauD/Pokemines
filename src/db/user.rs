@@ -106,8 +106,13 @@ impl MongoClient {
                 }
             },
             doc! {
-                "$sort": {
-                    "total_points": -1
+                "$setWindowFields": {
+                    "sortBy": {"total_points": -1},
+                    "output": {
+                        "rank": {
+                            "$rank": {},
+                        },
+                    }
                 }
             },
             doc! {"$limit": limit},
@@ -117,5 +122,46 @@ impl MongoClient {
             .map(|x| bson::from_document(x.unwrap()))
             .try_collect::<Vec<LeaderboardUser>>()
             .await?)
+    }
+
+    pub async fn get_leaderboard_user(&self, user: &ObjectId) -> Result<Option<LeaderboardUser>> {
+        let coll = self._database.collection::<User>("User");
+        let pipeline = vec![
+            doc! {
+                "$lookup": {
+                    "from": "Card",
+                    "localField": "cards",
+                    "foreignField": "_id",
+                    "as": "cards_pop"
+                }
+            },
+            doc! {
+                "$addFields": {
+                    "total_points": {
+                        "$sum": "$cards_pop.points"
+                    }
+                }
+            },
+            doc! {
+                "$setWindowFields": {
+                    "sortBy": {"total_points": -1},
+                    "output": {
+                        "rank": {
+                            "$rank": {},
+                        },
+                    }
+                }
+            },
+            doc! {
+                "$match": {
+                    "_id": user
+                }
+            },
+        ];
+        let mut cursor = coll.aggregate(pipeline, None).await?;
+        Ok(cursor
+            .next()
+            .await
+            .map(|x| bson::from_document(x.unwrap()).unwrap()))
     }
 }

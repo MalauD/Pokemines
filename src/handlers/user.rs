@@ -2,26 +2,23 @@ use actix_web::{web, HttpResponse};
 use bson::oid::ObjectId;
 use serde::Deserialize;
 
-use crate::{
-    db::get_mongo,
-    models::{PublicUser, User},
-    search::get_meilisearch,
-    tools::PaginationOptions,
-};
+use crate::{db::get_mongo, models::User, search::get_meilisearch, tools::PaginationOptions};
 
 use super::responses::UserResponse;
 
 pub async fn me(user: User) -> UserResponse {
-    Ok(HttpResponse::Ok().json(PublicUser::from(user)))
+    let db = get_mongo(None).await;
+    let user = db.get_leaderboard_user(&user.get_id().unwrap()).await?;
+    Ok(HttpResponse::Ok().json(user))
 }
 
 pub async fn get_user(user_id: web::Path<String>, _: User) -> UserResponse {
     let db = get_mongo(None).await;
     let oid = ObjectId::parse_str(user_id.into_inner())?;
-    let user = db.get_user(&oid).await?.ok_or("User not found");
+    let user = db.get_leaderboard_user(&oid).await?;
     match user {
-        Ok(user) => Ok(HttpResponse::Ok().json(PublicUser::from(user))),
-        Err(e) => Ok(HttpResponse::NotFound().json(e.to_string())),
+        Some(_) => Ok(HttpResponse::Ok().json(user)),
+        None => Ok(HttpResponse::NotFound().finish()),
     }
 }
 

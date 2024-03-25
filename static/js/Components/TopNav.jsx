@@ -16,7 +16,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { AccountCircle } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { Badge, useMediaQuery } from '@mui/material';
+import { Badge, Typography, useMediaQuery } from '@mui/material';
 import SearchAccount from './Search/SearchAccount';
 import useConnected from '../Hooks/useConnected';
 import useAdmin from '../Hooks/useAdmin';
@@ -155,7 +155,18 @@ export default function DrawerAppBar(props) {
                     </Box>
                     {isConnected && (
                         <>
-                            <Box sx={{ marginLeft: 'auto' }}>
+                            {showAccount && (
+                                <Button
+                                    sx={{
+                                        color: '#fff',
+                                        marginLeft: 'auto',
+                                        pointerEvents: 'none',
+                                    }}
+                                >
+                                    {formatAccountBalance(currentUser.account_balance)} MNO$
+                                </Button>
+                            )}
+                            <Box sx={{}}>
                                 {!searchOpen && (
                                     <IconButton
                                         sx={{
@@ -193,9 +204,9 @@ export default function DrawerAppBar(props) {
                                     onClick={() => navigate('/moi')}
                                 >
                                     <Badge
-                                        badgeContent={formatAccountBalance(
-                                            currentUser.account_balance
-                                        )}
+                                        badgeContent={`${currentUser.rank}${
+                                            currentUser.rank === 1 ? 'er' : 'ème'
+                                        }`}
                                         max={10000}
                                         color="secondary"
                                     >
