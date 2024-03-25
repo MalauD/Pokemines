@@ -60,17 +60,27 @@ function App() {
 
     // Check on page load if the user is connected
     React.useEffect(() => {
-        Axios.get('/api/user/me')
-            .then((res) => {
-                if (res.status === 200) {
-                    setCurrentUser(res.data);
-                }
-                setIsLoaded(true);
-            })
-            .catch(() => {
-                setCurrentUser(null);
-                setIsLoaded(true);
-            });
+        const updateCurrentUser = async () => {
+            Axios.get('/api/user/me')
+                .then((res) => {
+                    if (res.status === 200) {
+                        setCurrentUser(res.data);
+                    }
+                    setIsLoaded(true);
+                })
+                .catch(() => {
+                    setCurrentUser(null);
+                    setIsLoaded(true);
+                });
+        };
+
+        updateCurrentUser();
+
+        const interval = setInterval(() => {
+            updateCurrentUser();
+        }, 60 * 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     if (!isLoaded) {

@@ -34,9 +34,19 @@ export default function Leaderboard({ pageSize, limit }) {
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        Axios.get(`/api/user/leaderboard?limit${limit}`).then((res) => {
-            setRows(res.data.filter((user) => user.total_points > 0 && user.mail !== 'admin'));
-        });
+        const fetchLeaderboard = () => {
+            Axios.get(`/api/user/leaderboard?limit${limit}`).then((res) => {
+                setRows(res.data.filter((user) => user.total_points > 0 && user.mail !== 'admin'));
+            });
+        };
+
+        fetchLeaderboard();
+
+        const interval = setInterval(() => {
+            fetchLeaderboard();
+        }, 30 * 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     return (
