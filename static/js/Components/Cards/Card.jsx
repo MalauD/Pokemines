@@ -37,9 +37,6 @@ const card_style = [
             fontSize: '5cqw',
             width: '72cqw',
         },
-        counter: {
-            backgroundColor: 'rgba(21, 120, 228, 0.5)',
-        },
         backGroundPath: '/Cards/card_common_front_trans.png',
     },
     {
@@ -73,9 +70,6 @@ const card_style = [
             fontSize: '5cqw',
             width: '72cqw',
         },
-        counter: {
-            backgroundColor: 'rgba(21, 120, 228, 0.5)',
-        },
         backGroundPath: '/Cards/card_common_front_trans.png',
     },
     {
@@ -108,9 +102,6 @@ const card_style = [
             left: '14%',
             fontSize: '5cqw',
             width: '72cqw',
-        },
-        counter: {
-            backgroundColor: 'rgba(21, 120, 228, 0.5)',
         },
         backGroundPath: '/Cards/card_common_front_trans.png',
     },
@@ -144,9 +135,6 @@ const card_style = [
             left: '18%',
             fontSize: '5cqw',
             width: '66cqw',
-        },
-        counter: {
-            backgroundColor: '#000',
         },
         backGroundPath: '/Cards/card_epique_front_trans.png',
     },
@@ -185,8 +173,8 @@ export default function Card({ name, points, strength, weakness, card_number, co
             {count ? (
                 <Chip
                     label={count}
-                    color="success"
-                    sx={{ position: 'absolute', top: '2%', left: '3%', ...styles.counter }}
+                    color="primary"
+                    sx={{ position: 'absolute', top: '2%', left: '3%', color: 'white' }}
                 />
             ) : null}
 
