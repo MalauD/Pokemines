@@ -5,6 +5,7 @@ use crate::{
 use bson::{oid::ObjectId, Document};
 use futures::{StreamExt, TryStreamExt};
 use mongodb::{bson::doc, error::Result};
+use s3::serde_types::Object;
 
 impl MongoClient {
     pub async fn put_cards_in_marketplace(
@@ -375,5 +376,26 @@ impl MongoClient {
             )
             .await?;
         Ok(doc.is_some())
+    }
+
+    pub async fn get_user_selling_cards(&self, user: &ObjectId) -> Result<Vec<ObjectId>> {
+        let coll = self._database.collection::<Transaction>("Transaction");
+        let docs = coll
+            .find(
+                doc! {
+                    "sender_id": user,
+                    "status": TransactionStatus::Waiting.to_string(),
+                    "transaction_type.type": "Marketplace"
+                },
+                None,
+            )
+            .await?
+            .try_collect::<Vec<Transaction>>()
+            .await?;
+
+        Ok(docs
+            .into_iter()
+            .map(|x| x.transaction_type.as_marketplace().unwrap().1.clone())
+            .collect())
     }
 }

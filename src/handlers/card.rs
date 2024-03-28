@@ -1,4 +1,4 @@
-use std::num::NonZeroU32;
+use std::{borrow::Borrow, num::NonZeroU32};
 
 use actix_multipart::form::MultipartForm;
 use actix_web::{web, HttpResponse};
@@ -8,7 +8,7 @@ use serde_json::json;
 
 use crate::{
     db::get_mongo,
-    models::{Card, CardReq, User},
+    models::{BoostersSettings, Card, CardRarityPoints, CardReq, CardsRarityPoints, User},
     s3::get_s3,
     search::get_meilisearch,
     tools::{resize_image, CardError, PaginationOptions},
@@ -99,5 +99,54 @@ pub async fn search_card(
     let cards = meilisearch
         .search_cards(query.into_inner().q, pagination.into_inner())
         .await?;
+    Ok(HttpResponse::Ok().json(cards))
+}
+
+pub async fn get_boosters(_: User, boosters_settings: web::Data<BoostersSettings>) -> CardResponse {
+    Ok(HttpResponse::Ok().json(boosters_settings))
+}
+
+pub async fn pay_booster(
+    req: web::Path<u32>,
+    user: User,
+    boosters_settings: web::Data<BoostersSettings>,
+    cards_points: web::Data<CardsRarityPoints>,
+) -> CardResponse {
+    let db = get_mongo(None).await;
+    let boosters_settings = boosters_settings.get_ref();
+    let BoostersSettings(boosters_settings) = boosters_settings;
+    let booster = boosters_settings
+        .get(req.into_inner() as usize)
+        .ok_or(CardError::NotFound)?;
+
+    // Verify that user has enough money
+    let user = db.get_user(&user.get_id().unwrap()).await?.unwrap();
+    let user_id = user.get_id().unwrap();
+    if user.account_balance < booster.price {
+        return Err(CardError::InsufficientFunds);
+    }
+
+    // Get card selection
+    let settings = booster.get_card_selection_rand();
+    log::debug!("Selected settings: {:?}", settings);
+    let admin_id = db.get_admin().await?.get_id().unwrap();
+    let admin_selling_card_ids = db.get_user_selling_cards(&admin_id).await?;
+    let cards = db
+        .get_random_cards_with_settings(
+            &admin_id,
+            &settings,
+            &cards_points,
+            &admin_selling_card_ids,
+        )
+        .await?
+        .ok_or(CardError::NotEnoughCards)?;
+
+    // Pay the booster
+    db.transfer_money(&user_id, &admin_id, booster.price as i32)
+        .await?;
+    // Transfer cards
+    let card_ids = cards.iter().map(|c| c.id.unwrap()).collect();
+    db.transfer_cards(&card_ids, &admin_id, &user_id).await?;
+
     Ok(HttpResponse::Ok().json(cards))
 }

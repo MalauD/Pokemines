@@ -2,6 +2,7 @@ use crate::{
     api::config_api,
     app_settings::{get_settings, AppSettings},
     db::get_mongo,
+    models::{BoostersSettings, CardsRarityPoints},
     s3::get_s3,
     search::{get_meilisearch, MeilisearchConfig},
 };
@@ -16,6 +17,7 @@ use actix_web::{
     cookie::{time::Duration, Key},
     middleware, web, App, HttpRequest, HttpResponse, HttpServer, Result,
 };
+use bson::serde_helpers;
 use dotenv::dotenv;
 use log::info;
 
@@ -68,6 +70,20 @@ async fn main() -> std::io::Result<()> {
     }))
     .await;
 
+    let card_config: CardsRarityPoints = serde_json::from_str(
+        std::fs::read_to_string("./static/js/CardRarityPoints.json")
+            .unwrap()
+            .as_str(),
+    )
+    .unwrap();
+
+    let boosters_config: BoostersSettings = serde_json::from_str(
+        std::fs::read_to_string("./static/js/BoosterComposition.json")
+            .unwrap()
+            .as_str(),
+    )
+    .unwrap();
+
     HttpServer::new(move || {
         App::new()
             .wrap(middleware::Compress::default())
@@ -83,6 +99,8 @@ async fn main() -> std::io::Result<()> {
                     )
                     .build(),
             )
+            .app_data(web::Data::new(card_config.clone()))
+            .app_data(web::Data::new(boosters_config.clone()))
             .route("/", web::get().to(index)) // Redirect all react routes to index
             .route("/connexion", web::get().to(index))
             .route("/connexion/{tail:.*}", web::get().to(index))
@@ -105,6 +123,8 @@ async fn main() -> std::io::Result<()> {
             .route("/transaction/{tail:.*}", web::get().to(index))
             .route("/carte", web::get().to(index))
             .route("/carte/{tail:.*}", web::get().to(index))
+            .route("/booster", web::get().to(index))
+            .route("/booster/{tail:.*}", web::get().to(index))
             .route("/health", web::get().to(health))
             .configure(config_api)
             .service(Files::new("/", "./static"))

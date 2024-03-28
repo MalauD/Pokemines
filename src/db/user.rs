@@ -18,6 +18,19 @@ impl MongoClient {
         .await
     }
 
+    pub async fn get_admin(&self) -> Result<User> {
+        let coll = self._database.collection::<User>("User");
+        coll.find_one(
+            doc! {
+                "admin": true,
+                "mail": "admin"
+            },
+            None,
+        )
+        .await
+        .map(|x| x.unwrap())
+    }
+
     pub async fn get_user(&self, user: &ObjectId) -> Result<Option<User>> {
         let coll = self._database.collection::<User>("User");
         coll.find_one(doc! {"_id": user}, None).await

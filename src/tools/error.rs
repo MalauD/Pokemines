@@ -49,6 +49,8 @@ pub enum CardError {
     CardAlreadyInMarketplace,
     #[error("MeilisearchError: something went wrong with meilisearch")]
     MeilisearchError(#[from] meilisearch_sdk::errors::Error),
+    #[error("NotEnoughCards: not enough cards to create a booster")]
+    NotEnoughCards,
 }
 
 impl ResponseError for CardError {
@@ -62,10 +64,17 @@ impl ResponseError for CardError {
             Self::InsufficientFunds => StatusCode::FORBIDDEN,
             Self::CardAlreadyInMarketplace => StatusCode::FORBIDDEN,
             Self::MeilisearchError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::NotEnoughCards => StatusCode::FORBIDDEN,
         }
     }
 
     fn error_response(&self) -> HttpResponse {
-        HttpResponseBuilder::new(self.status_code()).finish()
+        match self {
+            Self::DatabaseError(_) => HttpResponseBuilder::new(self.status_code()).finish(),
+            Self::S3Error(_) => HttpResponseBuilder::new(self.status_code()).finish(),
+            Self::Deserialization(_) => HttpResponseBuilder::new(self.status_code()).finish(),
+            Self::MeilisearchError(_) => HttpResponseBuilder::new(self.status_code()).finish(),
+            _ => HttpResponseBuilder::new(self.status_code()).body(self.to_string()),
+        }
     }
 }

@@ -1,0 +1,47 @@
+[
+    {
+        "name": "Booster bronze",
+        "image_path": "/Cards/Boosters/booster_bronze.webp",
+        "price": 500,
+        "options": [
+            {
+                "probability": 0.625,
+                "composition": [3, 0, 0, 0]
+            },
+            {
+                "probability": 0.375,
+                "composition": [2, 1, 0, 0]
+            }
+        ]
+    },
+    {
+        "name": "Booster silver",
+        "image_path": "/Cards/Boosters/booster_silver.webp",
+        "price": 1000,
+        "options": [
+            {
+                "probability": 0.45,
+                "composition": [4, 0, 1, 0]
+            },
+            {
+                "probability": 0.375,
+                "composition": [3, 2, 0, 0]
+            }
+        ]
+    },
+    {
+        "name": "Booster gold",
+        "image_path": "/Cards/Boosters/booster_gold.webp",
+        "price": 1750,
+        "options": [
+            {
+                "probability": 0.47,
+                "composition": [2, 0, 0, 1]
+            },
+            {
+                "probability": 0.53,
+                "composition": [1, 2, 2, 0]
+            }
+        ]
+    }
+]

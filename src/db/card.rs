@@ -1,7 +1,10 @@
 use crate::{
     db::MongoClient,
-    models::{Card, GroupedCard, PopulatedCard, User},
+    models::{
+        Card, CardsRarityPoints, GroupedCard, PopulatedCard, RandomCardSelectionSettings, User,
+    },
 };
+use bson::bson;
 use bson::oid::ObjectId;
 use futures::{StreamExt, TryStreamExt};
 use mongodb::{bson::doc, error::Result, options::FindOneOptions};
@@ -162,5 +165,65 @@ impl MongoClient {
         )
         .await?;
         Ok(())
+    }
+
+    pub async fn get_random_cards_with_settings(
+        &self,
+        from_owner: &ObjectId,
+        settings: &RandomCardSelectionSettings,
+        card_points: &CardsRarityPoints,
+        exclude_cards: &Vec<ObjectId>,
+    ) -> Result<Option<Vec<Card>>> {
+        let coll = self._database.collection::<Card>("Card");
+        let RandomCardSelectionSettings(settings) = settings;
+        let create_sub_pipeline = |rarity_index: usize| -> bson::Bson {
+            bson! ([{
+                "$match": {
+                    "_id": {
+                        "$nin": exclude_cards
+                    },
+                    "points": {
+                        "$gte": card_points.get_points_min(rarity_index),
+                        "$lt": card_points.get_points_max(rarity_index)
+                    },
+                    "owner": from_owner,
+                }
+            },
+            {
+                "$sample": {
+                    "size": settings[rarity_index]
+                }
+            }])
+        };
+        let sub_pipelines: bson::Document = bson::Document::from_iter(
+            settings
+                .iter()
+                .enumerate()
+                .map(|(i, _)| (i.to_string(), create_sub_pipeline(i))),
+        );
+        let pipeline = vec![doc! {
+            "$facet": sub_pipelines
+        }];
+        let res = coll
+            .aggregate(pipeline, None)
+            .await?
+            .next()
+            .await
+            .unwrap()?;
+        let mut cards = vec![];
+        for i in 0..settings.len() {
+            cards.extend(
+                res.get_array(i.to_string())
+                    .unwrap()
+                    .iter()
+                    .map(|x| bson::from_bson(x.clone()).unwrap()),
+            );
+        }
+        let total_expected = settings.iter().sum::<u32>();
+        if total_expected != cards.len() as u32 {
+            return Ok(None);
+        }
+
+        Ok(Some(cards))
     }
 }

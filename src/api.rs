@@ -34,7 +34,15 @@ pub fn config_api(cfg: &mut web::ServiceConfig) {
                         web::resource("/number/{card_number}/image")
                             .route(web::get().to(get_card_image)),
                     )
-                    .service(web::resource("/search").route(web::get().to(search_card))),
+                    .service(web::resource("/search").route(web::get().to(search_card)))
+                    .service(
+                        web::scope("/booster")
+                            .service(web::resource("/all").route(web::get().to(get_boosters)))
+                            .service(
+                                web::resource("/{booster_number}/pay")
+                                    .route(web::post().to(pay_booster)),
+                            ),
+                    ),
             )
             .service(
                 web::scope("/transaction")

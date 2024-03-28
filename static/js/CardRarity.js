@@ -1,9 +1,4 @@
-const Rarity = [
-    { min: 10, max: 40 },
-    { min: 40, max: 80 },
-    { min: 80, max: 130 },
-    { min: 130, max: 1000 },
-];
+import Rarity from './CardRarityPoints.json'
 
 const RarityName = [
     "Ok Tiers",

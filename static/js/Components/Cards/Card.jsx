@@ -162,6 +162,7 @@ export default function Card({ name, points, strength, weakness, card_number, co
                 width: '90vw',
                 maxWidth: '400px',
                 containerType: 'inline-size',
+                cursor: 'pointer',
                 ...sx,
             }}
             onClick={() => navigate(`/carte/numero/${card_number}`)}

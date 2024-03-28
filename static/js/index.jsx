@@ -25,6 +25,7 @@ import UserCreation from './Pages/UserCreation';
 import Pokedex from './Pages/Pokedex';
 import LeaderboardPage from './Pages/LeaderboardPage';
 import CardExplorer from './Pages/CardExplorer';
+import BoosterBuyPage from './Pages/BoosterBuyPage';
 
 Axios.defaults.withCredentials = true;
 
@@ -125,6 +126,10 @@ function App() {
                                 <Route
                                     path="/admin"
                                     element={<ProtectedRoute Component={Admin} />}
+                                />
+                                <Route
+                                    path="/booster/:boosterId"
+                                    element={<ProtectedRoute Component={BoosterBuyPage} />}
                                 />
                                 <Route
                                     path="/marche"
