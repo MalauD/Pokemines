@@ -55,6 +55,7 @@ export default function Boosters() {
                                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
                                 padding: '0.4rem',
                                 borderRadius: '13px',
+                                whiteSpace: 'nowrap',
                             }}
                         >
                             {booster.price} MNO$
