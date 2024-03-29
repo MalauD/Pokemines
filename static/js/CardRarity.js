@@ -14,13 +14,6 @@ const RarityQuantity = [
     2
 ];
 
-const RarityPrice = [
-    100,
-    250,
-    500,
-    2000
-];
-
 const CardPointsToRarityIndex = (points) => {
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < Rarity.length; i++) {
@@ -31,4 +24,11 @@ const CardPointsToRarityIndex = (points) => {
     return -1;
 }
 
-export { Rarity, RarityName,CardPointsToRarityIndex, RarityQuantity, RarityPrice };
+const getInitialRarityPrice = (points) => {
+    const rarityIndex = CardPointsToRarityIndex(points);
+    const {min, max} = Rarity[rarityIndex];
+    return Math.round((max + min) / (2*(max-min)) * (points - min));
+}
+
+
+export { Rarity, RarityName,CardPointsToRarityIndex, RarityQuantity, getInitialRarityPrice };

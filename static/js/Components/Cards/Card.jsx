@@ -1,6 +1,5 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Typography from '@mui/material/Typography';
 import { Box, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Textfit } from 'react-textfit';

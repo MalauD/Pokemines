@@ -1,4 +1,13 @@
-import { Box, Button, CircularProgress, Grid, Paper, TextField, Typography } from '@mui/material';
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Grid,
+    Paper,
+    Slider,
+    TextField,
+    Typography,
+} from '@mui/material';
 import React, { useState } from 'react';
 import Axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -9,6 +18,7 @@ import MarketPlaceTransactionList from '../Components/Transactions/MarketPlaceTr
 import CurrentUserContext from '..';
 import SearchAccount from '../Components/Search/SearchAccount';
 import MarketPlaceCardOwners from '../Components/Transactions/MarketPlaceCardOwners';
+import { getInitialRarityPrice } from '../CardRarity';
 
 const groupCardByUser = (cards) => {
     const grouped = {};
@@ -145,6 +155,25 @@ function CardPage() {
         });
     };
 
+    const initial_price = getInitialRarityPrice(cards[0].points);
+    const max_price = Math.round(initial_price * 1.2);
+    const min_price = Math.round(initial_price * 0.8);
+
+    const sliderMarks = [
+        {
+            value: min_price,
+            label: `${min_price} MNO$`,
+        },
+        {
+            value: initial_price,
+            label: `${initial_price} MNO$`,
+        },
+        {
+            value: max_price,
+            label: `${max_price} MNO$`,
+        },
+    ];
+
     return (
         <Box
             sx={{
@@ -190,15 +219,15 @@ function CardPage() {
                             justifyContent="center"
                             sx={{ mb: 2 }}
                         >
-                            <Grid item xs={5}>
-                                <TextField
-                                    label="Prix de vente"
-                                    variant="outlined"
-                                    fullWidth
-                                    type="number"
-                                    sx={{ mt: 2, height: '100%' }}
-                                    value={sellingPrice}
-                                    onChange={(e) => setSellingPrice(e.target.value)}
+                            <Grid item xs={8}>
+                                <Slider
+                                    valueLabelDisplay="auto"
+                                    max={max_price}
+                                    min={min_price}
+                                    marks={sliderMarks}
+                                    value={sellingPrice === 0 ? initial_price : sellingPrice}
+                                    onChange={(_, value) => setSellingPrice(value)}
+                                    track={false}
                                 />
                             </Grid>
                             <Grid item xs={5}>

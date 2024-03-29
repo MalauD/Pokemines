@@ -18,7 +18,7 @@ import {
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
-import { Rarity, RarityName, RarityPrice, RarityQuantity } from '../CardRarity';
+import { Rarity, RarityName, getInitialRarityPrice, RarityQuantity } from '../CardRarity';
 import Card from '../Components/Cards/Card';
 
 const VisuallyHiddenInput = styled('input')({
@@ -69,7 +69,7 @@ function CardCreation() {
             data.append('image', image);
             data.append('points', cardPoints);
             data.append('card_count', RarityQuantity[rarityLevel]);
-            data.append('price', RarityPrice[rarityLevel]);
+            data.append('price', getInitialRarityPrice(cardPoints));
             data.append('card_in_marketplace', cardInMarketPlace);
             Axios.post('/api/card/upload', data, {
                 headers: {
@@ -150,7 +150,7 @@ function CardCreation() {
                         </Select>
                         <FormHelperText>
                             Points : {cardPoints}, Exemplaires: {RarityQuantity[rarityLevel]}, Prix:{' '}
-                            {RarityPrice[rarityLevel]}
+                            {getInitialRarityPrice(cardPoints)}
                         </FormHelperText>
                     </FormControl>
                     <FormControlLabel
