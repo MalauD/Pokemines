@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Typography from '@mui/material/Typography';
 import { Box, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Textfit } from 'react-textfit';
 import { CardPointsToRarityIndex } from '../../CardRarity';
 
 const card_style = [
@@ -14,28 +15,34 @@ const card_style = [
             height: '49.8cqw',
         },
         name: {
-            top: '8.2%',
+            top: '8.8%',
             left: '14%',
-            fontSize: '7cqw',
+            width: '48cqw',
+            height: '10cqw',
             fontFamily: 'Magical Night',
+            textAlign: 'center',
         },
         points: {
-            top: '8.2%',
+            top: '8.8%',
             left: '69%',
-            fontSize: '7cqw',
+            width: '19cqw',
+            height: '8cqw',
             fontFamily: 'Magical Night',
+            textAlign: 'center',
         },
         strength: {
             top: '58%',
             left: '14%',
             fontSize: '5cqw',
             width: '72cqw',
+            height: '20cqw',
         },
         weakness: {
             top: '77.5%',
             left: '14%',
             fontSize: '5cqw',
             width: '72cqw',
+            height: '20cqw',
         },
         backGroundPath: '/Cards/card_common_front_trans.webp',
     },
@@ -51,24 +58,31 @@ const card_style = [
             left: '16%',
             fontSize: '7cqw',
             fontFamily: 'Magical Night',
+            width: '41cqw',
+            height: '10cqw',
         },
         points: {
             top: '12.5%',
             left: '64%',
             fontSize: '7cqw',
             fontFamily: 'Magical Night',
+            width: '16cqw',
+            height: '10cqw',
+            textAlign: 'center',
         },
         strength: {
             top: '56%',
             left: '16%',
             fontSize: '5cqw',
             width: '63cqw',
+            height: '21cqw',
         },
         weakness: {
             top: '75.5%',
             left: '18%',
             fontSize: '5cqw',
             width: '59cqw',
+            height: '19cqw',
         },
         backGroundPath: '/Cards/card_rare_front_trans.webp',
     },
@@ -82,13 +96,18 @@ const card_style = [
         name: {
             top: '13.8%',
             left: '17%',
+            width: '44cqw',
+            height: '10cqw',
             fontSize: '7cqw',
             fontFamily: 'airstrikeacad',
         },
         points: {
             top: '13.8%',
             left: '65%',
+            width: '17cqw',
+            height: '10cqw',
             fontSize: '7cqw',
+            textAlign: 'center',
             fontFamily: 'airstrikeacad',
         },
         strength: {
@@ -96,12 +115,14 @@ const card_style = [
             left: '18%',
             fontSize: '5cqw',
             width: '66cqw',
+            height: '19cqw',
         },
         weakness: {
             top: '74%',
             left: '18%',
             fontSize: '5cqw',
             width: '66cqw',
+            height: '19cqw',
         },
         backGroundPath: '/Cards/card_epique_front_trans.webp',
     },
@@ -113,20 +134,24 @@ const card_style = [
             height: '35.8cqw',
         },
         name: {
-            top: '19.8%',
+            top: '20.8%',
             left: '50%',
             transform: 'translateX(-50%)',
             textAlign: 'center',
             fontSize: '7cqw',
             fontFamily: 'Magical Night',
+            width: '52cqw',
+            height: '7cqw',
         },
         points: {
-            top: '11.2%',
+            top: '13.2%',
             left: '50%',
             transform: 'translateX(-50%)',
             textAlign: 'center',
             fontSize: '7cqw',
             fontFamily: 'Magical Night',
+            width: '22cqw',
+            height: '7cqw',
         },
         strength: {
             top: '55%',
@@ -134,7 +159,8 @@ const card_style = [
             transform: 'translateX(-50%)',
             textAlign: 'center',
             fontSize: '5cqw',
-            width: '72cqw',
+            width: '60cqw',
+            height: '21cqw',
         },
         weakness: {
             top: '72.5%',
@@ -142,7 +168,8 @@ const card_style = [
             transform: 'translateX(-50%)',
             textAlign: 'center',
             fontSize: '5cqw',
-            width: '55cqw',
+            width: '50cqw',
+            height: '17cqw',
         },
         backGroundPath: '/Cards/card_legendary_front_trans.webp',
     },
@@ -187,50 +214,44 @@ export default function Card({ name, points, strength, weakness, card_number, co
                 />
             ) : null}
 
-            <Typography
-                variant="h6"
-                component="div"
-                sx={{
+            <Textfit
+                style={{
                     position: 'absolute',
                     color: 'white',
                     ...styles.name,
                 }}
             >
                 {name}
-            </Typography>
-            <Typography
-                variant="h6"
-                component="div"
-                sx={{
+            </Textfit>
+            <Textfit
+                style={{
                     position: 'absolute',
                     color: 'white',
                     ...styles.points,
                 }}
             >
                 {points}
-            </Typography>
-            <Typography
-                variant="h6"
-                component="div"
-                sx={{
+            </Textfit>
+            <Textfit
+                max={20}
+                style={{
                     position: 'absolute',
                     color: 'white',
                     ...styles.strength,
                 }}
             >
                 {strength}
-            </Typography>
-            <Typography
-                variant="h6"
-                component="div"
-                sx={{
+            </Textfit>
+            <Textfit
+                max={20}
+                style={{
                     position: 'absolute',
                     color: 'white',
                     ...styles.weakness,
                 }}
             >
                 {weakness}
-            </Typography>
+            </Textfit>
         </Box>
     );
 }
