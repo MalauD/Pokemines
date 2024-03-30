@@ -14,7 +14,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import SearchIcon from '@mui/icons-material/Search';
 import { AccountCircle } from '@mui/icons-material';
-import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { Badge, useMediaQuery } from '@mui/material';
 import SearchAccount from './Search/SearchAccount';
@@ -46,8 +45,7 @@ const pathLookup = {
     Connexion: '/connexion',
 };
 
-export default function DrawerAppBar(props) {
-    const { window } = props;
+export default function DrawerAppBar() {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [searchOpen, setSearchOpen] = React.useState(false);
     const isConnected = useConnected();
@@ -68,6 +66,10 @@ export default function DrawerAppBar(props) {
         : disconnectedNavItems;
 
     const navItemsDrawer = [...navItems, 'Mon Compte'];
+
+    if (window.location.search.includes('fullscreen=true')) {
+        return null;
+    }
 
     const drawer = (
         <Box
@@ -136,7 +138,7 @@ export default function DrawerAppBar(props) {
     React.useEffect(() => {
         setSearchOpen(!isXs);
     }, [isXs]);
-    const container = window !== undefined ? () => window().document.body : undefined;
+    const container = window !== undefined ? () => window.document.body : undefined;
 
     const showAccount = (isXs && !searchOpen) || !isXs;
     return (
@@ -272,7 +274,3 @@ export default function DrawerAppBar(props) {
         </Box>
     );
 }
-
-DrawerAppBar.propTypes = {
-    window: PropTypes.func.isRequired,
-};
