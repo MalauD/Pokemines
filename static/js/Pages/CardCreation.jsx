@@ -41,7 +41,7 @@ function CardCreation() {
     const [cardStrength, setCardStrength] = useState('');
     const [cardWeakness, setCardWeakness] = useState('');
     const [loadingCreation, setLoadingCreation] = useState(false);
-    const [cardInMarketPlace, setCardInMarketPlace] = useState(true);
+    const [cardInMarketPlace, setCardInMarketPlace] = useState(false);
     const [rarityLevel, setRarityLevel] = useState(0);
 
     const navigate = useNavigate();
