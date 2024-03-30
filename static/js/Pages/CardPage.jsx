@@ -56,6 +56,7 @@ function CardPage() {
     React.useEffect(() => {
         Axios.get(`/api/card/number/${cardNumber}`).then((res) => {
             setCards(res.data);
+            setSellingPrice(getInitialRarityPrice(res.data[0].points));
             setOwnedCards(res.data.filter((c) => c.owner._id === currentUser._id));
 
             Axios.get(`/api/transaction/number/${cardNumber}?status=Waiting`).then((res2) => {
@@ -225,7 +226,7 @@ function CardPage() {
                                     max={max_price}
                                     min={min_price}
                                     marks={sliderMarks}
-                                    value={sellingPrice === 0 ? initial_price : sellingPrice}
+                                    value={sellingPrice}
                                     onChange={(_, value) => setSellingPrice(value)}
                                     track={false}
                                 />

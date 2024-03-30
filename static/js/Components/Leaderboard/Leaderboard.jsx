@@ -4,9 +4,13 @@ import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@mui/material';
 
 const columns = [
+    {
+        field: 'rank',
+        headerName: 'Classement',
+        width: 120,
+    },
     {
         field: 'first_name',
         headerName: 'Prénom',
