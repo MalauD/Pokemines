@@ -47,7 +47,9 @@ function DisplayBoosterOptions({ options }) {
                             <TableCell component="th" scope="row">
                                 {index + 1}
                             </TableCell>
-                            <TableCell align="right">{row.probability * 100}%</TableCell>
+                            <TableCell align="right">
+                                {(row.probability * 100).toFixed(1)}%
+                            </TableCell>
                             <TableCell align="right">
                                 {row.composition.map((card_count, level) =>
                                     [...Array(card_count)].map(() => (
