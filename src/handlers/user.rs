@@ -2,12 +2,21 @@ use actix_web::{web, HttpResponse};
 use bson::oid::ObjectId;
 use serde::Deserialize;
 
-use crate::{db::get_mongo, models::User, search::get_meilisearch, tools::PaginationOptions};
+use crate::{
+    db::get_mongo,
+    models::{PublicUser, User},
+    search::get_meilisearch,
+    tools::PaginationOptions,
+};
 
 use super::responses::UserResponse;
 
 pub async fn me(user: User) -> UserResponse {
     let db = get_mongo(None).await;
+    if user.mail == "admin" {
+        let admin = db.get_admin().await?;
+        return Ok(HttpResponse::Ok().json(PublicUser::from(admin)));
+    }
     let user = db.get_leaderboard_user(&user.get_id().unwrap()).await?;
     Ok(HttpResponse::Ok().json(user))
 }

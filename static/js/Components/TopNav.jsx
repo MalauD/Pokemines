@@ -240,9 +240,13 @@ export default function DrawerAppBar() {
                                     onClick={() => navigate('/moi')}
                                 >
                                     <Badge
-                                        badgeContent={`${currentUser.rank}${
-                                            currentUser.rank === 1 ? 'er' : 'ème'
-                                        }`}
+                                        badgeContent={
+                                            currentUser.mail === 'admin'
+                                                ? 'admin'
+                                                : `${currentUser.rank}${
+                                                      currentUser.rank === 1 ? 'er' : 'ème'
+                                                  }`
+                                        }
                                         max={10000}
                                         color="secondary"
                                     >

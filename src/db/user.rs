@@ -104,6 +104,15 @@ impl MongoClient {
         let coll = self._database.collection::<User>("User");
         let pipeline = vec![
             doc! {
+                "$match": {
+                    "mail": {
+                        "$not": {
+                            "$eq": "admin"
+                        }
+                    }
+                }
+            },
+            doc! {
                 "$lookup": {
                     "from": "Card",
                     "localField": "cards",
@@ -140,6 +149,15 @@ impl MongoClient {
     pub async fn get_leaderboard_user(&self, user: &ObjectId) -> Result<Option<LeaderboardUser>> {
         let coll = self._database.collection::<User>("User");
         let pipeline = vec![
+            doc! {
+                "$match": {
+                    "mail": {
+                        "$not": {
+                            "$eq": "admin"
+                        }
+                    }
+                }
+            },
             doc! {
                 "$lookup": {
                     "from": "Card",

@@ -47,10 +47,12 @@ function MyAccount() {
                 <Typography component="h4" variant="h6">
                     Solde : {account_balance} MNO$
                 </Typography>
-                <Typography component="h5" gutterBottom variant="h6">
-                    Rang : {rank}
-                    {rank === 1 ? 'er' : 'ème'}
-                </Typography>
+                {rank && (
+                    <Typography component="h5" gutterBottom variant="h6">
+                        Rang : {rank}
+                        {rank === 1 ? 'er' : 'ème'}
+                    </Typography>
+                )}
                 {promo ? (
                     <Typography component="h5" variant="h6">
                         Promo : {promo}
