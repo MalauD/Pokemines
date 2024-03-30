@@ -93,7 +93,8 @@ export default function BoosterBuyPage() {
 
     const handleBuy = () => {
         if (currentUser.account_balance < booster.price) {
-            enqueueSnackbar('Solde insuffisant', { variant: 'error' });
+            enqueueSnackbar("T'as plus de thunes !", { variant: 'error' });
+            return;
         }
         Axios.post(`/api/card/booster/${boosterId}/pay`)
             .then((cards) => {
@@ -111,7 +112,7 @@ export default function BoosterBuyPage() {
                             variant: 'error',
                         });
                     } else if (error.response.data.includes('InsufficientFunds')) {
-                        enqueueSnackbar('Solde insuffisant', { variant: 'error' });
+                        enqueueSnackbar("T'as plus de thunes !", { variant: 'error' });
                     }
                     return;
                 }

@@ -55,7 +55,7 @@ export default function MarketPlaceTransactionList({
                             onTransactionCompleted(res.data);
                         })
                         .catch(() => {
-                            enqueueSnackbar('Fond insuffisant', {
+                            enqueueSnackbar("T'as plus de thunes !", {
                                 variant: 'error',
                             });
                         });
