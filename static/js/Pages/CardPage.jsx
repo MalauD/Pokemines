@@ -99,8 +99,9 @@ function CardPage() {
         });
     };
 
-    const onTransactionCancelled = (transaction) => {
-        setTransactions((prev) => prev.filter((t) => t._id !== transaction._id));
+    const onTransactionCancelled = (cancelledTransactions) => {
+        const cancelledTransactionsIds = cancelledTransactions.map((t) => t._id);
+        setTransactions((prev) => prev.filter((t) => !cancelledTransactionsIds.includes(t._id)));
     };
 
     const onDonate = () => {
@@ -260,6 +261,7 @@ function CardPage() {
                             )}
                             onTransactionCompleted={onTransactionCompleted}
                             onTransactionCancelled={onTransactionCancelled}
+                            showSelection
                         />
                     </>
                 )}

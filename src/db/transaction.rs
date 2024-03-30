@@ -64,6 +64,22 @@ impl MongoClient {
         Ok(())
     }
 
+    pub async fn cancel_transactions(&self, transactions: &Vec<ObjectId>) -> Result<()> {
+        let coll = self._database.collection::<Transaction>("Transaction");
+        coll.update_many(
+            doc! {"_id": {"$in": transactions}},
+            doc! {
+                "$set": {
+                    "status": TransactionStatus::Cancelled.to_string(),
+                    "completed_at": chrono::Utc::now()
+                }
+            },
+            None,
+        )
+        .await?;
+        Ok(())
+    }
+
     pub async fn get_waiting_transaction_marketplace(&self) -> Result<Vec<PopulatedTransaction>> {
         let coll = self._database.collection::<Transaction>("Transaction");
         let pipeline = vec![
@@ -224,7 +240,7 @@ impl MongoClient {
 
     pub async fn get_transactions_by_ids(
         &self,
-        ids: Vec<ObjectId>,
+        ids: &Vec<ObjectId>,
     ) -> Result<Vec<PopulatedTransaction>> {
         let coll = self._database.collection::<Transaction>("Transaction");
         let pipeline = vec![

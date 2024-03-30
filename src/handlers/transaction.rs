@@ -1,11 +1,10 @@
 use actix_web::{web, HttpResponse};
 use bson::oid::ObjectId;
 use serde::Deserialize;
-use std::collections::HashMap;
 
 use crate::{
     db::get_mongo,
-    models::{Card, PopulatedTransaction, PopulatedTransactionType, TransactionStatus, User},
+    models::{PopulatedTransactionType, TransactionStatus, User},
     tools::CardError,
 };
 
@@ -110,7 +109,7 @@ pub async fn sell_cards(user: User, req: web::Json<SellRequest>) -> CardResponse
     let transactions = db
         .put_cards_in_marketplace(card_ids, price, user.get_id().unwrap())
         .await?;
-    let transactions = db.get_transactions_by_ids(transactions).await?;
+    let transactions = db.get_transactions_by_ids(&transactions).await?;
     Ok(HttpResponse::Ok().json(transactions))
 }
 
@@ -134,4 +133,36 @@ pub async fn transaction_cancel(user: User, req: web::Path<String>) -> CardRespo
         .await?
         .ok_or(CardError::NotFound)?;
     Ok(HttpResponse::Ok().json(transaction))
+}
+
+#[derive(Debug, Deserialize)]
+pub struct BulkCancelRequest {
+    transaction_ids: Vec<String>,
+}
+
+pub async fn transaction_cancel_bulk(
+    user: User,
+    bulk_req: web::Json<BulkCancelRequest>,
+) -> CardResponse {
+    let db = get_mongo(None).await;
+    let transaction_ids: Vec<ObjectId> = bulk_req
+        .transaction_ids
+        .iter()
+        .map(|x| ObjectId::parse_str(x).unwrap())
+        .collect();
+    let transactions = db.get_transactions_by_ids(&transaction_ids).await?;
+
+    if transactions
+        .iter()
+        .any(|x| x.sender_id != user.get_id().unwrap())
+        || transactions
+            .iter()
+            .any(|x| x.status != TransactionStatus::Waiting)
+    {
+        return Err(CardError::Unauthorized);
+    }
+
+    db.cancel_transactions(&transaction_ids).await?;
+    let transactions = db.get_transactions_by_ids(&transaction_ids).await?;
+    Ok(HttpResponse::Ok().json(transactions))
 }

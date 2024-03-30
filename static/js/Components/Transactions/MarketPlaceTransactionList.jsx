@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import Axios from 'axios';
 import { useSnackbar } from 'notistack';
 import CurrentUserContext from '../..';
@@ -10,9 +10,11 @@ export default function MarketPlaceTransactionList({
     transactions,
     onTransactionCompleted,
     onTransactionCancelled,
+    showSelection,
 }) {
     const { currentUser } = React.useContext(CurrentUserContext);
     const { enqueueSnackbar } = useSnackbar();
+    const [selectedRows, setSelectedRows] = React.useState([]);
 
     const columns = [
         {
@@ -41,7 +43,7 @@ export default function MarketPlaceTransactionList({
                             enqueueSnackbar('Transaction annulée avec succès', {
                                 variant: 'success',
                             });
-                            onTransactionCancelled(res.data);
+                            onTransactionCancelled([res.data]);
                         });
                         return;
                     }
@@ -74,22 +76,56 @@ export default function MarketPlaceTransactionList({
         },
     ];
 
+    const onCancelClick = () => {
+        Axios.post('/api/transaction/cancel', { transaction_ids: selectedRows })
+            .then((res) => {
+                enqueueSnackbar(`${res.data.length} transactions annulées avec succès`, {
+                    variant: 'success',
+                });
+                onTransactionCancelled(res.data);
+            })
+            .catch(() => {
+                enqueueSnackbar('Une erreur est survenue', {
+                    variant: 'error',
+                });
+            });
+    };
+
+    const showCancelButton = showSelection && selectedRows.length > 0;
+
     return (
-        <div style={{ height: 400, width: '100%' }}>
-            <DataGrid
-                rows={transactions}
-                columns={columns}
-                autoPageSize
-                disableRowSelectionOnClick
-                disableColumnMenu
-                getRowId={(row) => row._id}
-                initialState={{
-                    sorting: {
-                        sortModel: [{ field: 'price', sort: 'asc' }],
-                    },
-                }}
-            />
-        </div>
+        <Box style={{ height: '100%', width: '100%' }}>
+            <Box style={{ height: 400, width: '100%' }}>
+                <DataGrid
+                    rows={transactions}
+                    columns={columns}
+                    autoPageSize
+                    disableRowSelectionOnClick
+                    disableColumnMenu
+                    checkboxSelection={showSelection}
+                    getRowId={(row) => row._id}
+                    initialState={{
+                        sorting: {
+                            sortModel: [{ field: 'price', sort: 'asc' }],
+                        },
+                    }}
+                    rowSelectionModel={selectedRows}
+                    onRowSelectionModelChange={setSelectedRows}
+                />
+            </Box>
+            {showCancelButton && (
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ color: 'white' }}
+                        onClick={onCancelClick}
+                    >
+                        Annuler {selectedRows.length} transactions
+                    </Button>
+                </Box>
+            )}
+        </Box>
     );
 }
 
@@ -97,10 +133,12 @@ MarketPlaceTransactionList.defaultProps = {
     transactions: [],
     onTransactionCompleted: () => {},
     onTransactionCancelled: () => {},
+    showSelection: false,
 };
 
 MarketPlaceTransactionList.propTypes = {
     transactions: PropTypes.arrayOf(PropTypes.shape({})),
     onTransactionCompleted: PropTypes.func,
     onTransactionCancelled: PropTypes.func,
+    showSelection: PropTypes.bool,
 };
