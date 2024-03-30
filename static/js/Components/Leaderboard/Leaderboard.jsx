@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 const columns = [
     {
         field: 'rank',
-        headerName: 'Classement',
-        width: 120,
+        headerName: 'Rang',
+        width: 30,
     },
     {
         field: 'first_name',
