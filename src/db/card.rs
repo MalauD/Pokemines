@@ -183,7 +183,7 @@ impl MongoClient {
                         "$nin": exclude_cards
                     },
                     "points": {
-                        "$gte": card_points.get_points_min(rarity_index),
+                        "$gt": card_points.get_points_min(rarity_index),
                         "$lt": card_points.get_points_max(rarity_index)
                     },
                     "owner": from_owner,
