@@ -8,10 +8,10 @@ const RarityName = [
 ];
 
 const RarityQuantity = [
-    20,
-    10,
-    5,
-    2
+    300,
+    300,
+    300,
+    300
 ];
 
 const CardPointsToRarityIndex = (points) => {
