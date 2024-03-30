@@ -25,7 +25,7 @@ export default function MarketPlaceCardOwners({ cards }) {
     return (
         <div style={{ height: 400, width: '100%' }}>
             <DataGrid
-                rows={cards}
+                rows={cards.filter((card) => card.owner.mail !== 'admin')}
                 columns={columns}
                 autoPageSize
                 disableRowSelectionOnClick
