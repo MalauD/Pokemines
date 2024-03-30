@@ -24,11 +24,8 @@ const CardPointsToRarityIndex = (points) => {
     return -1;
 }
 
-const getInitialRarityPrice = (points) => {
-    const rarityIndex = CardPointsToRarityIndex(points);
-    const {min, max} = Rarity[rarityIndex];
-    return Math.round((max + min) / (2*(max-min)) * (points - min));
-}
+
+const getInitialRarityPrice = (points) => Math.round(points * 3.333)
 
 
 export { Rarity, RarityName,CardPointsToRarityIndex, RarityQuantity, getInitialRarityPrice };
