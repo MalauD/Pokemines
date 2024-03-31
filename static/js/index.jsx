@@ -26,6 +26,7 @@ import Pokedex from './Pages/Pokedex';
 import LeaderboardPage from './Pages/LeaderboardPage';
 import CardExplorer from './Pages/CardExplorer';
 import BoosterBuyPage from './Pages/BoosterBuyPage';
+import AboutPage from './Pages/AboutPage';
 
 Axios.defaults.withCredentials = true;
 
@@ -165,6 +166,7 @@ function App() {
                                     path="/carte/numero/:cardNumber"
                                     element={<ProtectedRoute Component={CardPage} />}
                                 />
+                                <Route path="/a-propos" element={<AboutPage />} />
                             </Routes>
                         </Box>
                     </Router>

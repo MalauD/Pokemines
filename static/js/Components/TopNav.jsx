@@ -31,8 +31,9 @@ const adminNavItems = [
     'Explorer',
     'Admin',
     'Mon Compte',
+    'A propos',
 ];
-const disconnectedNavItems = ['Accueil', 'Leaderboard', 'Connexion'];
+const disconnectedNavItems = ['Accueil', 'Leaderboard', 'Connexion', 'A propos'];
 
 const pathLookup = {
     Accueil: '/',
@@ -43,6 +44,7 @@ const pathLookup = {
     Admin: '/admin',
     'Mon Compte': '/moi',
     Connexion: '/connexion',
+    'A propos': '/a-propos',
 };
 
 export default function DrawerAppBar() {

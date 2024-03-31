@@ -125,6 +125,7 @@ async fn main() -> std::io::Result<()> {
             .route("/carte/{tail:.*}", web::get().to(index))
             .route("/booster", web::get().to(index))
             .route("/booster/{tail:.*}", web::get().to(index))
+            .route("/a-propos", web::get().to(index))
             .route("/health", web::get().to(health))
             .configure(config_api)
             .service(Files::new("/", "./static"))
