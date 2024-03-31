@@ -228,7 +228,10 @@ export default function Card({ name, points, strength, weakness, card_number, co
                     ...styles.name,
                 }}
             >
-                {name}
+                {name
+                    .toUpperCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')}
             </Textfit>
             <Textfit
                 style={{
