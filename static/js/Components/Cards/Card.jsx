@@ -82,9 +82,9 @@ const card_style = [
         },
         weakness: {
             top: '75.5%',
-            left: '18%',
+            left: '20%',
             fontSize: '5cqw',
-            width: '59cqw',
+            width: '60cqw',
             height: '19cqw',
         },
         backGroundPath: '/Cards/card_rare_front_trans.webp',
