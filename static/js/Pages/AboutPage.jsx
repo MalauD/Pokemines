@@ -67,18 +67,54 @@ export default function AboutPage() {
     ];
 
     const lots_pool = [
-        '/Lots/lot_ballon_foot_pool.jpg',
-        '/Lots/lot_ballon_volley_pool.jpeg',
-        '/Lots/lot_chaise_camping_pool.jpg',
-        '/Lots/lot_climbup_pool.jpeg',
-        '/Lots/lot_kasteel_pool.jpg',
-        '/Lots/lot_mug_pool.jpeg',
-        '/Lots/lot_paillason_pool.jpg',
-        '/Lots/lot_poliakov_pool.jpg',
-        '/Lots/lot_spliiit_pool.png',
-        '/Lots/lot_trousse_pool.jpeg',
-        '/Lots/lot_voiture_pool.png',
-        '/Lots/lot_pates_a_tartiner_pool.jpg',
+        {
+            illustration: '/Lots/lot_ballon_foot_pool.jpg',
+            description: 'Ballon de foot (x1)',
+        },
+        {
+            illustration: '/Lots/lot_ballon_volley_pool.jpeg',
+            description: 'Ballon de volley (x1)',
+        },
+        {
+            illustration: '/Lots/lot_chaise_camping_pool.jpg',
+            description: 'Chaises de camping personnalisées (x2)',
+        },
+        {
+            illustration: '/Lots/lot_climbup_pool.jpeg',
+            description: 'Entrée gratuite Climb Up (x10)',
+        },
+        {
+            illustration: '/Lots/lot_kasteel_pool.jpg',
+            description: 'Écusson Kasteel (x1)',
+        },
+        {
+            illustration: '/Lots/lot_mug_pool.jpeg',
+            description: 'Mug personnalisé Lyf x MNO (x9)',
+        },
+        {
+            illustration: '/Lots/lot_paillason_pool.jpg',
+            description: 'Paillason (x3)',
+        },
+        {
+            illustration: '/Lots/lot_poliakov_pool.jpg',
+            description: 'Bouteille de Poliakov vide personnalisée (x1)',
+        },
+        {
+            illustration: '/Lots/lot_spliiit_pool.png',
+            description: 'Carde cadeau de 5€ Spliiit (x10)',
+        },
+        {
+            illustration: '/Lots/lot_trousse_pool.jpeg',
+            description: 'Trousse Lyf x MNO (x2)',
+        },
+        {
+            illustration: '/Lots/lot_voiture_pool.png',
+            description: 'Voiture télécommandée (x4)',
+        },
+        {
+            illustration: '/Lots/lot_pates_a_tartiner_pool.jpg',
+            description: 'Pâtes à tartiner des Sœurs Macarons (x4)',
+        },
     ];
 
     return (
@@ -93,7 +129,7 @@ export default function AboutPage() {
             }}
         >
             <Typography variant="h4" gutterBottom sx={{ alignSelf: 'center' }}>
-                A propos
+                À propos
             </Typography>
             <Typography variant="h5" gutterBottom>
                 Sommaire
@@ -306,8 +342,8 @@ export default function AboutPage() {
                 sx={{ textJustify: 'inter-word', textAlign: 'justify' }}
                 gutterBottom
             >
-                Lots supplémentaire à gagner, deux lots pour les 4e au 10e et un lot pour les 11e au
-                44e
+                Lots supplémentaire à gagner, deux lots différents pour les 4e au 10e et un lot pour
+                les 11e au 44e
             </Typography>
             <Box
                 sx={{
@@ -320,7 +356,25 @@ export default function AboutPage() {
                 }}
             >
                 {lots_pool.map((lot) => (
-                    <img src={lot} alt="icon" style={{ width: 150, height: '100%' }} />
+                    <Box
+                        key={lot.description}
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 150,
+                        }}
+                    >
+                        <img
+                            src={lot.illustration}
+                            alt="icon"
+                            style={{ width: '100%', height: '100%' }}
+                        />
+                        <Typography variant="caption" sx={{ textAlign: 'center', marginTop: 1 }}>
+                            {lot.description}
+                        </Typography>
+                    </Box>
                 ))}
             </Box>
             <Typography variant="h5" gutterBottom id="support" sx={{ marginTop: 2 }}>
