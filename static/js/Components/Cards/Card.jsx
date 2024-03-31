@@ -20,6 +20,7 @@ const card_style = [
             height: '10cqw',
             fontFamily: 'Bauhaus',
             textAlign: 'center',
+            color: '#0053c3',
         },
         points: {
             top: '8.8%',
@@ -28,6 +29,7 @@ const card_style = [
             height: '8cqw',
             fontFamily: 'Bauhaus',
             textAlign: 'center',
+            color: '#0053c3',
         },
         strength: {
             top: '58%',
@@ -48,26 +50,28 @@ const card_style = [
     {
         img: {
             top: '23.2%',
-            left: '13%',
-            width: '68.5cqw',
-            height: '39.8cqw',
+            left: '14%',
+            width: '72.5cqw',
+            height: '41.8cqw',
         },
         name: {
-            top: '12.5%',
+            top: '13.5%',
             left: '16%',
             fontSize: '7cqw',
-            fontFamily: 'Super Positive',
+            fontFamily: 'The Last Shuriken',
             width: '41cqw',
             height: '10cqw',
+            color: '#000',
         },
         points: {
-            top: '12.5%',
+            top: '13.5%',
             left: '64%',
             fontSize: '7cqw',
-            fontFamily: 'Super Positive',
+            fontFamily: 'The Last Shuriken',
             width: '16cqw',
             height: '10cqw',
             textAlign: 'center',
+            color: '#000',
         },
         strength: {
             top: '56%',
@@ -99,6 +103,7 @@ const card_style = [
             height: '10cqw',
             fontSize: '7cqw',
             fontFamily: 'airstrikeacad',
+            color: '#fff',
         },
         points: {
             top: '13.8%',
@@ -108,6 +113,7 @@ const card_style = [
             fontSize: '7cqw',
             textAlign: 'center',
             fontFamily: 'airstrikeacad',
+            color: '#fff',
         },
         strength: {
             top: '56%',
@@ -141,6 +147,7 @@ const card_style = [
             fontFamily: 'Viking',
             width: '52cqw',
             height: '7cqw',
+            color: '#ccb906',
         },
         points: {
             top: '13.2%',
@@ -151,6 +158,7 @@ const card_style = [
             fontFamily: 'Viking',
             width: '22cqw',
             height: '7cqw',
+            color: '#ccb906',
         },
         strength: {
             top: '55%',
