@@ -4,6 +4,16 @@
 }
 
 @font-face {
-    font-family: 'Magical Night';
-    src: url('./fonts/Magical-Night.ttf') format('truetype');
+    font-family: 'Bauhaus';
+    src: url('./fonts/Bauhaus.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Super Positive';
+    src: url('./fonts/Super-Positive-Personal-Use.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Viking';
+    src: url('./fonts/Viking.ttf') format('truetype');
 }
