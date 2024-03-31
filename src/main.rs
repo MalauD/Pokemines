@@ -10,7 +10,7 @@ use actix_files::{Files, NamedFile};
 use actix_identity::IdentityMiddleware;
 use actix_session::{
     config::{CookieContentSecurity, PersistentSession},
-    storage::CookieSessionStore,
+    storage::RedisSessionStore,
     SessionMiddleware,
 };
 use actix_web::{
@@ -70,6 +70,26 @@ async fn main() -> std::io::Result<()> {
     }))
     .await;
 
+    let redis_config = config.clone();
+    let redis_connection_string = if let Some(redis_pasword) = redis_config.redis_password {
+        format!(
+            "redis://{}:{}@{}:{}",
+            redis_config.redis_username.unwrap_or("default".to_string()),
+            redis_pasword,
+            redis_config.redis_service_host,
+            redis_config.redis_service_port,
+        )
+    } else {
+        format!(
+            "redis://{}:{}",
+            redis_config.redis_service_host, redis_config.redis_service_port,
+        )
+    };
+
+    let redis_store = RedisSessionStore::new(redis_connection_string)
+        .await
+        .unwrap();
+
     let card_config: CardsRarityPoints = serde_json::from_str(
         std::fs::read_to_string("./static/js/CardRarityPoints.json")
             .unwrap()
@@ -89,7 +109,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Compress::default())
             .wrap(IdentityMiddleware::default())
             .wrap(
-                SessionMiddleware::builder(CookieSessionStore::default(), secret_key.clone())
+                SessionMiddleware::builder(redis_store.clone(), secret_key.clone())
                     .cookie_secure(false)
                     .cookie_content_security(CookieContentSecurity::Private)
                     .cookie_name("pokemines-id".to_string())

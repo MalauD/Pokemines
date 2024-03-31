@@ -18,6 +18,10 @@ pub struct AppSettings {
     pub session_key: Option<String>,
     pub meilisearch_host: String,
     pub meilisearch_api_key: Option<String>,
+    pub redis_service_host: String,
+    pub redis_service_port: String,
+    pub redis_password: Option<String>,
+    pub redis_username: Option<String>,
 }
 
 static APP_SETTINGS: OnceCell<AppSettings> = OnceCell::new();
