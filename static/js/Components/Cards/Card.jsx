@@ -1,8 +1,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Box, Chip } from '@mui/material';
+import { Box, Chip, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Textfit } from 'react-textfit';
+import { ThreeSixty } from '@mui/icons-material';
 import { CardPointsToRarityIndex } from '../../CardRarity';
 
 const card_style = [
@@ -46,6 +47,7 @@ const card_style = [
             height: '20cqw',
         },
         backGroundPath: '/Cards/card_common_front_trans.webp',
+        backCardPath: '/Cards/card_common_back_trans.webp',
     },
     {
         img: {
@@ -88,6 +90,7 @@ const card_style = [
             height: '19cqw',
         },
         backGroundPath: '/Cards/card_rare_front_trans.webp',
+        backCardPath: '/Cards/card_rare_back_trans.webp',
     },
     {
         img: {
@@ -130,6 +133,7 @@ const card_style = [
             height: '19cqw',
         },
         backGroundPath: '/Cards/card_epique_front_trans.webp',
+        backCardPath: '/Cards/card_epique_back_trans.webp',
     },
     {
         img: {
@@ -179,11 +183,23 @@ const card_style = [
             height: '17cqw',
         },
         backGroundPath: '/Cards/card_legendary_front_trans.webp',
+        backCardPath: '/Cards/card_legendary_back_trans.webp',
     },
 ];
 
-export default function Card({ name, points, strength, weakness, card_number, count, image, sx }) {
+export default function Card({
+    name,
+    points,
+    strength,
+    weakness,
+    card_number,
+    count,
+    image,
+    sx,
+    reversedByDefault,
+}) {
     const navigate = useNavigate();
+    const [reverse, setReverse] = React.useState(reversedByDefault);
 
     const rarityIndex = CardPointsToRarityIndex(points);
 
@@ -199,69 +215,90 @@ export default function Card({ name, points, strength, weakness, card_number, co
                 cursor: 'pointer',
                 ...sx,
             }}
-            onClick={() => navigate(`/carte/numero/${card_number}`)}
         >
-            <img src={styles.backGroundPath} alt={name} style={{ width: '100%', height: 'auto' }} />
-            <img
-                src={image || `/api/card/number/${card_number}/image`}
-                alt={name}
-                style={{
-                    position: 'absolute',
-                    color: 'white',
-                    zIndex: -1,
-                    objectFit: 'cover',
-                    ...styles.img,
-                }}
-            />
-            {count ? (
-                <Chip
-                    label={count}
-                    color="primary"
-                    sx={{ position: 'absolute', top: '2%', left: '3%', color: 'white' }}
+            <IconButton
+                onClick={() => setReverse(!reverse)}
+                sx={{ position: 'absolute', bottom: '5%', right: '5%' }}
+            >
+                <ThreeSixty sx={{ color: 'white' }} fontSize="large" color="primary" />
+            </IconButton>
+            {reverse ? (
+                <img
+                    src={styles.backCardPath}
+                    alt={name}
+                    onClick={() => navigate(`/carte/numero/${card_number}`)}
+                    style={{ width: '100%', height: 'auto' }}
                 />
-            ) : null}
+            ) : (
+                <>
+                    <img
+                        src={styles.backGroundPath}
+                        alt={name}
+                        onClick={() => navigate(`/carte/numero/${card_number}`)}
+                        style={{ width: '100%', height: 'auto' }}
+                    />
+                    <img
+                        src={image || `/api/card/number/${card_number}/image`}
+                        alt={name}
+                        style={{
+                            position: 'absolute',
+                            color: 'white',
+                            zIndex: -1,
+                            objectFit: 'cover',
+                            ...styles.img,
+                        }}
+                    />
+                    {count ? (
+                        <Chip
+                            label={count}
+                            color="primary"
+                            sx={{ position: 'absolute', top: '2%', left: '3%', color: 'white' }}
+                        />
+                    ) : null}
 
-            <Textfit
-                style={{
-                    position: 'absolute',
-                    color: 'white',
-                    ...styles.name,
-                }}
-            >
-                {name
-                    .toUpperCase()
-                    .normalize('NFD')
-                    .replace(/[\u0300-\u036f]/g, '')}
-            </Textfit>
-            <Textfit
-                style={{
-                    position: 'absolute',
-                    color: 'white',
-                    ...styles.points,
-                }}
-            >
-                {points}
-            </Textfit>
-            <Textfit
-                max={20}
-                style={{
-                    position: 'absolute',
-                    color: 'white',
-                    ...styles.strength,
-                }}
-            >
-                {strength}
-            </Textfit>
-            <Textfit
-                max={20}
-                style={{
-                    position: 'absolute',
-                    color: 'white',
-                    ...styles.weakness,
-                }}
-            >
-                {weakness}
-            </Textfit>
+                    <Textfit
+                        style={{
+                            position: 'absolute',
+                            color: 'white',
+                            ...styles.name,
+                        }}
+                    >
+                        {name
+                            .toUpperCase()
+                            .normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '')}
+                    </Textfit>
+                    <Textfit
+                        style={{
+                            position: 'absolute',
+                            color: 'white',
+                            ...styles.points,
+                        }}
+                    >
+                        {points}
+                    </Textfit>
+                    <Textfit
+                        max={20}
+                        style={{
+                            position: 'absolute',
+                            color: 'white',
+                            ...styles.strength,
+                        }}
+                    >
+                        {strength}
+                    </Textfit>
+                    <Textfit
+                        max={20}
+                        style={{
+                            position: 'absolute',
+                            color: 'white',
+                            ...styles.weakness,
+                        }}
+                    >
+                        {weakness}
+                    </Textfit>
+                </>
+            )}
         </Box>
     );
 }
@@ -275,6 +312,7 @@ Card.propTypes = {
     count: PropTypes.number,
     image: PropTypes.string,
     sx: PropTypes.shape({}),
+    reversedByDefault: PropTypes.bool,
 };
 
 Card.defaultProps = {
@@ -282,4 +320,5 @@ Card.defaultProps = {
     count: null,
     image: null,
     sx: {},
+    reversedByDefault: false,
 };
