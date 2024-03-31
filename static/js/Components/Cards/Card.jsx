@@ -197,6 +197,7 @@ export default function Card({
     image,
     sx,
     reversedByDefault,
+    onCardFlip,
 }) {
     const navigate = useNavigate();
     const [reverse, setReverse] = React.useState(reversedByDefault);
@@ -217,7 +218,10 @@ export default function Card({
             }}
         >
             <IconButton
-                onClick={() => setReverse(!reverse)}
+                onClick={() => {
+                    setReverse(!reverse);
+                    onCardFlip(!reverse);
+                }}
                 sx={{ position: 'absolute', bottom: '5%', right: '5%' }}
             >
                 <ThreeSixty sx={{ color: 'white' }} fontSize="large" color="primary" />
@@ -313,6 +317,7 @@ Card.propTypes = {
     image: PropTypes.string,
     sx: PropTypes.shape({}),
     reversedByDefault: PropTypes.bool,
+    onCardFlip: PropTypes.func,
 };
 
 Card.defaultProps = {
@@ -321,4 +326,5 @@ Card.defaultProps = {
     image: null,
     sx: {},
     reversedByDefault: false,
+    onCardFlip: () => {},
 };

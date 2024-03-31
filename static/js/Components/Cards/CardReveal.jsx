@@ -6,6 +6,7 @@ import Card from './Card';
 
 export default function CardReveal({ cards, onRevealEnd }) {
     const [currentCardIndex, setCurrentCardIndex] = React.useState(0);
+    const [currentCardRevealed, setCurrentCardRevealed] = React.useState(false);
     const { enqueueSnackbar } = useSnackbar();
 
     const handleNext = () => {
@@ -28,12 +29,17 @@ export default function CardReveal({ cards, onRevealEnd }) {
     return (
         <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
             <Card
+                key={currentCardIndex}
                 name={currentCard.name}
                 image={currentCard.image}
                 card_number={currentCard.card_number}
                 points={currentCard.points}
                 strength={currentCard.strength}
                 weakness={currentCard.weakness}
+                reversedByDefault
+                onCardFlip={(revered) => {
+                    if (!revered) setCurrentCardRevealed(true);
+                }}
             />
             <Box
                 display="flex"
@@ -56,6 +62,7 @@ export default function CardReveal({ cards, onRevealEnd }) {
                     color="primary"
                     variant="contained"
                     sx={{ color: 'white' }}
+                    disabled={!currentCardRevealed}
                 >
                     {currentCardIndex === cards.length - 1 ? 'Terminer' : 'Suivante'}
                 </Button>
