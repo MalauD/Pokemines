@@ -32,6 +32,36 @@ impl MongoClient {
             .collect())
     }
 
+    pub async fn get_last_created_cards(&self, limit: usize) -> Result<Vec<Card>> {
+        let coll = self._database.collection::<Card>("Card");
+        let pipeline = vec![
+            doc! {
+                "$sort": {
+                    "_id": -1
+                }
+            },
+            doc! {
+                "$group": {
+                    "_id": "$card_number",
+                    "card": {
+                        "$first": "$$ROOT"
+                    }
+
+                }
+            },
+            doc! {
+                "$limit": limit as i64
+            },
+        ];
+
+        Ok(coll
+            .aggregate(pipeline, None)
+            .await?
+            .map(|x| bson::from_document(x.unwrap().get_document("card").unwrap().clone()))
+            .try_collect()
+            .await?)
+    }
+
     pub async fn get_card_of_user(&self, user: &ObjectId) -> Result<Vec<Card>> {
         let coll = self._database.collection::<Card>("Card");
         coll.find(doc! {"owner": user}, None)

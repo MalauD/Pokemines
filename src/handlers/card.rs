@@ -59,6 +59,18 @@ pub async fn upload_card(mut card_form: MultipartForm<CardReq>, user: User) -> C
     Ok(HttpResponse::Ok().json(json!({ "ids": card_ids, "card_number": card_number })))
 }
 
+#[derive(Deserialize)]
+pub struct LimitQuery {
+    limit: Option<usize>,
+}
+
+pub async fn get_last_created_cards(_: User, query: web::Query<LimitQuery>) -> CardResponse {
+    let db = get_mongo(None).await;
+    let limit = query.limit.unwrap_or(10);
+    let cards = db.get_last_created_cards(limit).await?;
+    Ok(HttpResponse::Ok().json(cards))
+}
+
 pub async fn get_cards_of_user(req: web::Path<String>, _: User) -> CardResponse {
     let db = get_mongo(None).await;
     let oid = ObjectId::parse_str(req.into_inner())?;

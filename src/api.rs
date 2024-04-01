@@ -26,6 +26,7 @@ pub fn config_api(cfg: &mut web::ServiceConfig) {
             )
             .service(
                 web::scope("/card")
+                    .service(web::resource("/latest").route(web::get().to(get_last_created_cards)))
                     .service(web::resource("/upload").route(web::post().to(upload_card)))
                     .service(
                         web::resource("/number/{card_number}")

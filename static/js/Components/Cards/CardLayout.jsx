@@ -11,7 +11,7 @@ const CardContainer = styled.div`
     justify-content: center;
 `;
 
-export default function CardLayout({ cards, title, accessory }) {
+export default function CardLayout({ cards, title, accessory, onlyShowTitle }) {
     const [sort, setSort] = React.useState('default');
 
     const sortCards = (cards_input) => {
@@ -31,35 +31,40 @@ export default function CardLayout({ cards, title, accessory }) {
 
     return (
         <>
-            <Grid container spacing={2} justifyContent="space-between">
-                <Grid item md={2} xs={accessory ? 12 : 2}>
-                    <Typography variant="h4" gutterBottom>
-                        {title}
-                    </Typography>
-                </Grid>
-                {accessory ? (
-                    <Grid item md={6} xs={8}>
-                        {accessory}
+            {onlyShowTitle ? (
+                <Typography variant="h4" gutterBottom>
+                    {title}
+                </Typography>
+            ) : (
+                <Grid container spacing={2} justifyContent="space-between">
+                    <Grid item md={2} xs={accessory ? 12 : 2}>
+                        <Typography variant="h4" gutterBottom>
+                            {title}
+                        </Typography>
                     </Grid>
-                ) : null}
-                <Grid item md={2} xs={4}>
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel id="sort-label">Trier par :</InputLabel>
-                        <Select
-                            labelId="sort-label"
-                            id="sort"
-                            value={sort}
-                            label="Trier par :"
-                            onChange={(e) => setSort(e.target.value)}
-                        >
-                            <MenuItem value="default">Default</MenuItem>
-                            <MenuItem value="points">Points</MenuItem>
-                            <MenuItem value="name">Nom</MenuItem>
-                        </Select>
-                    </FormControl>
+                    {accessory ? (
+                        <Grid item md={6} xs={8}>
+                            {accessory}
+                        </Grid>
+                    ) : null}
+                    <Grid item md={2} xs={4}>
+                        <FormControl fullWidth sx={{ mb: 2 }}>
+                            <InputLabel id="sort-label">Trier par :</InputLabel>
+                            <Select
+                                labelId="sort-label"
+                                id="sort"
+                                value={sort}
+                                label="Trier par :"
+                                onChange={(e) => setSort(e.target.value)}
+                            >
+                                <MenuItem value="default">Default</MenuItem>
+                                <MenuItem value="points">Points</MenuItem>
+                                <MenuItem value="name">Nom</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
                 </Grid>
-            </Grid>
-
+            )}
             <CardContainer>
                 {sorted_cards.map((card) => (
                     <Card
@@ -92,9 +97,11 @@ CardLayout.propTypes = {
     ),
     title: PropTypes.string.isRequired,
     accessory: PropTypes.node,
+    onlyShowTitle: PropTypes.bool,
 };
 
 CardLayout.defaultProps = {
     cards: [],
     accessory: null,
+    onlyShowTitle: false,
 };
