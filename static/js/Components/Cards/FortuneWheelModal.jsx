@@ -22,7 +22,7 @@ const ImgFortuneWheel = styled('img')({
     animationTimingFunction: 'cubic-bezier(0.44, -0.205, 0, 1.13)',
 });
 
-const imageRotationMappping = [
+const imageRotationMapping = [
     { min: 0, max: 180 },
     { min: 181, max: 289 }, // 30%
     { min: 290, max: 344 }, // 15%
@@ -33,8 +33,8 @@ const rotationToIndex = (rotation) => {
     const mod_rotation = (rotation + 180) % 360;
 
     // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < imageRotationMappping.length; i++) {
-        const { min, max } = imageRotationMappping[i];
+    for (let i = 0; i < imageRotationMapping.length; i++) {
+        const { min, max } = imageRotationMapping[i];
         if (mod_rotation >= min && mod_rotation <= max) {
             return i;
         }
