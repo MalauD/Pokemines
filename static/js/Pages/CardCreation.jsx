@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { CloudUpload } from '@mui/icons-material';
+import { Casino, CloudUpload } from '@mui/icons-material';
 import {
     Box,
     Button,
@@ -8,6 +8,7 @@ import {
     FormControlLabel,
     FormHelperText,
     Grid,
+    IconButton,
     InputLabel,
     MenuItem,
     Paper,
@@ -20,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 import { Rarity, RarityName, getInitialRarityPrice, RarityQuantity } from '../CardRarity';
 import Card from '../Components/Cards/Card';
+import FortuneWheelModal from '../Components/Cards/FortuneWheelModal';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -43,6 +45,7 @@ function CardCreation() {
     const [loadingCreation, setLoadingCreation] = useState(false);
     const [cardInMarketPlace, setCardInMarketPlace] = useState(false);
     const [rarityLevel, setRarityLevel] = useState(0);
+    const [showFortuneWheelModal, setShowFortuneWheelModal] = useState(false);
 
     const navigate = useNavigate();
 
@@ -97,6 +100,14 @@ function CardCreation() {
             }}
         >
             <Paper sx={{ pl: '8vw', pr: '8vw', pt: '4vh', pb: '4vh' }}>
+                <FortuneWheelModal
+                    modalOpen={showFortuneWheelModal}
+                    onModalClose={() => setShowFortuneWheelModal(false)}
+                    onSpinEnded={(cardIndex) => {
+                        setRarityLevel(cardIndex);
+                        setShowFortuneWheelModal(false);
+                    }}
+                />
                 <Typography component="h1" variant="h5" sx={{ mb: 2 }} align="center">
                     Création de cartes
                 </Typography>
@@ -134,25 +145,41 @@ function CardCreation() {
                         value={cardWeakness}
                         onChange={(e) => setCardWeakness(e.target.value)}
                     />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel id="select-points-label">Rareté</InputLabel>
-                        <Select
-                            labelId="select-points-label"
-                            id="select-points"
-                            value={rarityLevel}
-                            onChange={(e) => setRarityLevel(e.target.value)}
-                            autoWidth
-                            label="Rareté"
-                        >
-                            {Rarity.map((_, i) => (
-                                <MenuItem value={i}>{RarityName[i]}</MenuItem>
-                            ))}
-                        </Select>
-                        <FormHelperText>
-                            Points : {cardPoints}, Exemplaires: {RarityQuantity[rarityLevel]}, Prix:{' '}
-                            {getInitialRarityPrice(cardPoints)}
-                        </FormHelperText>
-                    </FormControl>
+                    <Grid
+                        container
+                        spacing={2}
+                        alignItems="flex-start"
+                        justifyContent="center"
+                        sx={{ mb: 2, mt: 2 }}
+                    >
+                        <Grid item xs={10}>
+                            <FormControl fullWidth>
+                                <InputLabel id="select-points-label">Rareté</InputLabel>
+                                <Select
+                                    labelId="select-points-label"
+                                    id="select-points"
+                                    value={rarityLevel}
+                                    onChange={(e) => setRarityLevel(e.target.value)}
+                                    autoWidth
+                                    label="Rareté"
+                                >
+                                    {Rarity.map((_, i) => (
+                                        <MenuItem value={i}>{RarityName[i]}</MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>
+                                    Points : {cardPoints}, Exemplaires:{' '}
+                                    {RarityQuantity[rarityLevel]}, Prix:{' '}
+                                    {getInitialRarityPrice(cardPoints)}
+                                </FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <IconButton onClick={() => setShowFortuneWheelModal(true)}>
+                                <Casino fontSize="large" />
+                            </IconButton>
+                        </Grid>
+                    </Grid>
                     <FormControlLabel
                         margin="normal"
                         control={
