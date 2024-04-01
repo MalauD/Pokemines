@@ -18,7 +18,11 @@ function Accueil() {
             <Leaderboard limit={100} pageSize={10} />
             <Box sx={{ pl: '8vw', pr: '8vw' }}>
                 {latestCards.length === 0 ? null : (
-                    <CardLayout onlyShowTitle cards={latestCards} title="Les dernières cartes" />
+                    <CardLayout
+                        onlyShowTitle
+                        cards={latestCards}
+                        title="Les dernières cartes crées"
+                    />
                 )}
             </Box>
         </>
