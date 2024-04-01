@@ -27,6 +27,7 @@ import LeaderboardPage from './Pages/LeaderboardPage';
 import CardExplorer from './Pages/CardExplorer';
 import BoosterBuyPage from './Pages/BoosterBuyPage';
 import AboutPage from './Pages/AboutPage';
+import DonateToEveryonePage from './Pages/DonateToEveryonePage';
 
 Axios.defaults.withCredentials = true;
 
@@ -161,6 +162,10 @@ function App() {
                                 <Route
                                     path="/admin/utilisateur/create"
                                     element={<ProtectedRoute Component={UserCreation} />}
+                                />
+                                <Route
+                                    path="/admin/utilisateur/tous/donation"
+                                    element={<ProtectedRoute Component={DonateToEveryonePage} />}
                                 />
                                 <Route
                                     path="/carte/numero/:cardNumber"

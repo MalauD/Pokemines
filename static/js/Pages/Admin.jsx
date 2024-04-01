@@ -34,6 +34,14 @@ function Admin() {
                 >
                     Créer un utilisateur
                 </Button>
+                <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 2, color: 'white' }}
+                    onClick={() => navigate('/admin/utilisateur/tous/donation')}
+                >
+                    Donner de l&apos;argent à tous les utilisateurs
+                </Button>
             </Paper>
         </Box>
     );

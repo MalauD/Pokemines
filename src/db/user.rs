@@ -195,4 +195,15 @@ impl MongoClient {
             .await
             .map(|x| bson::from_document(x.unwrap()).unwrap()))
     }
+
+    pub async fn donate_to_all(&self, amount: i32) -> Result<()> {
+        let coll = self._database.collection::<User>("User");
+        coll.update_many(
+            doc! {"mail": {"$not": {"$eq": "admin"}}},
+            doc! {"$inc": {"account_balance": amount}},
+            None,
+        )
+        .await?;
+        Ok(())
+    }
 }

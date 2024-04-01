@@ -80,6 +80,15 @@ pub async fn donate_to_user(
     Ok(HttpResponse::Ok().finish())
 }
 
+pub async fn donate_to_all(user: User, donation: web::Json<Donation>) -> UserResponse {
+    if !user.admin {
+        return Ok(HttpResponse::Forbidden().json("You are not allowed to donate"));
+    }
+    let db = get_mongo(None).await;
+    db.donate_to_all(donation.amount).await?;
+    Ok(HttpResponse::Ok().finish())
+}
+
 #[derive(Deserialize)]
 pub struct TransferCard {
     card_ids: Vec<String>,
