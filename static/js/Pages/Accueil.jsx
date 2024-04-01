@@ -12,7 +12,6 @@ import {
     Typography,
     Link,
 } from '@mui/material';
-import { Navigate } from 'react-router-dom';
 import Leaderboard from '../Components/Leaderboard/Leaderboard';
 import CardLayout from '../Components/Cards/CardLayout';
 
@@ -51,7 +50,7 @@ function Accueil() {
                     <CardLayout
                         onlyShowTitle
                         cards={latestCards}
-                        title="Les dernières cartes crées"
+                        title="Les dernières cartes créées"
                     />
                 )}
                 <Typography variant="h4" sx={{ mt: 2 }} gutterBottom>
