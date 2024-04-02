@@ -1,4 +1,3 @@
-use actix_web::http;
 use log::info;
 use once_cell::sync::OnceCell;
 use s3::{creds::Credentials, error::S3Error, Bucket, BucketConfiguration, Region};
@@ -48,7 +47,7 @@ pub async fn get_s3(s3_config: Option<S3Config>) -> &'static S3Client {
         .await
         {
             Ok(b) => b.bucket,
-            Err(S3Error::Http(_)) => Bucket::new(
+            Err(S3Error::HttpFailWithBody(409, _)) => Bucket::new(
                 "pokemines",
                 Region::Custom {
                     region: s3_region.clone(),
