@@ -97,6 +97,7 @@ pub async fn get_card_image(req: web::Path<String>) -> CardResponse {
             7200,
             Some(custom_headers),
         )
+        .await
         .unwrap();
 
     Ok(HttpResponse::TemporaryRedirect()
