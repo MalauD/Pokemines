@@ -104,8 +104,21 @@ async fn main() -> std::io::Result<()> {
     )
     .unwrap();
 
+    let s3_url = config
+        .s3_url
+        .clone()
+        .parse::<actix_web::http::Uri>()
+        .unwrap();
+
     HttpServer::new(move || {
+        //Allow cors for s3 presigned urls
+        let cors = actix_cors::Cors::default()
+            .allowed_origin(s3_url.host().unwrap())
+            .allowed_methods(vec!["GET"])
+            .allowed_headers(vec!["content-type"])
+            .max_age(8000);
         App::new()
+            .wrap(cors)
             .wrap(middleware::Compress::default())
             .wrap(IdentityMiddleware::default())
             .wrap(

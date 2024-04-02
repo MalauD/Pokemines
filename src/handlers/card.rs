@@ -1,4 +1,4 @@
-use std::{borrow::Borrow, num::NonZeroU32};
+use std::{borrow::Borrow, collections::HashMap, num::NonZeroU32};
 
 use actix_multipart::form::MultipartForm;
 use actix_web::{web, HttpResponse};
@@ -86,15 +86,24 @@ pub async fn get_cards_by_number(req: web::Path<u32>, _: User) -> CardResponse {
 
 pub async fn get_card_image(req: web::Path<String>) -> CardResponse {
     let s3 = get_s3(None).await;
-    let image = s3
-        .get_bucket()
-        .get_object(format!("cards/{}.webp", req.into_inner()))
-        .await?;
 
-    Ok(HttpResponse::Ok()
+    let mut custom_headers = HashMap::new();
+    custom_headers.insert("content-type".to_string(), "image/webp".to_string());
+
+    let presigned_url = s3
+        .get_bucket()
+        .presign_get(
+            format!("cards/{}.webp", req.into_inner()),
+            7200,
+            Some(custom_headers),
+        )
+        .unwrap();
+
+    Ok(HttpResponse::TemporaryRedirect()
         .content_type("image/webp")
-        .append_header(("Cache-Control", "max-age=7200"))
-        .body(image.to_vec()))
+        .append_header(("Cache-Control", "max-age=7100"))
+        .append_header(("Location", presigned_url))
+        .finish())
 }
 
 #[derive(Deserialize)]
