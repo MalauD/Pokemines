@@ -48,7 +48,7 @@ pub async fn get_s3(s3_config: Option<S3Config>) -> &'static S3Client {
         .await
         {
             Ok(b) => b.bucket,
-            Err(S3Error::Http) => Bucket::new(
+            Err(S3Error::Http(_)) => Bucket::new(
                 "pokemines",
                 Region::Custom {
                     region: s3_region.clone(),
