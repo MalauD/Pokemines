@@ -88,6 +88,10 @@ export default function AboutPage() {
             description: 'Écusson Kasteel (x1)',
         },
         {
+            illustration: '/Lots/lot_cd_pool.jpeg',
+            description: 'Album Minestendo (x10)'
+        }
+        {
             illustration: '/Lots/lot_mug_pool.jpeg',
             description: 'Mug personnalisé Lyf x MNO (x9)',
         },
@@ -343,7 +347,7 @@ export default function AboutPage() {
                 gutterBottom
             >
                 Lots supplémentaire à gagner, deux lots différents pour les 4e au 10e et un lot pour
-                les 11e au 44e
+                les 11e au 54e
             </Typography>
             <Box
                 sx={{
