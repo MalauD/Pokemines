@@ -17,6 +17,7 @@ use actix_web::{
     cookie::{time::Duration, Key},
     middleware, web, App, HttpRequest, HttpResponse, HttpServer, Result,
 };
+use actix_web_prom::{PrometheusMetrics, PrometheusMetricsBuilder};
 use bson::serde_helpers;
 use dotenv::dotenv;
 use log::info;
@@ -110,6 +111,11 @@ async fn main() -> std::io::Result<()> {
         .parse::<actix_web::http::Uri>()
         .unwrap();
 
+    let prometheus = PrometheusMetricsBuilder::new("api")
+        .endpoint("/metrics")
+        .build()
+        .unwrap();
+
     HttpServer::new(move || {
         //Allow cors for s3 presigned urls
         let cors = actix_cors::Cors::default()
@@ -118,6 +124,7 @@ async fn main() -> std::io::Result<()> {
             .allowed_headers(vec!["content-type"])
             .max_age(8000);
         App::new()
+            .wrap(prometheus.clone())
             .wrap(cors)
             .wrap(middleware::Compress::default())
             .wrap(IdentityMiddleware::default())

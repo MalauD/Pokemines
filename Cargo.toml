@@ -32,3 +32,4 @@ chrono = "0.4.35"
 enum-as-inner = "0.6.0"
 image = { version = "0.25.0", features = ["webp", "png", "jpeg"] }
 fast_image_resize = "3.0.4"
+actix-web-prom = "0.8.0"
