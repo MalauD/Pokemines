@@ -89,8 +89,8 @@ export default function AboutPage() {
         },
         {
             illustration: '/Lots/lot_cd_pool.jpeg',
-            description: 'Album Minestendo (x10)'
-        }
+            description: 'Album Minestendo (x10)',
+        },
         {
             illustration: '/Lots/lot_mug_pool.jpeg',
             description: 'Mug personnalisé Lyf x MNO (x9)',
