@@ -158,8 +158,8 @@ function CardPage() {
     };
 
     const initial_price = getInitialRarityPrice(cards[0].points);
-    const max_price = Math.round(initial_price * 1.2);
-    const min_price = Math.round(initial_price * 0.8);
+    const max_price = Math.round(initial_price * 1.07);
+    const min_price = Math.round(initial_price * 0.93);
 
     const sliderMarks = [
         {
