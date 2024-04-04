@@ -8,7 +8,7 @@ export default function CardExplorer() {
     const [search, setSearch] = React.useState('');
 
     React.useEffect(() => {
-        Axios.get(`/api/card/search?q=${search}&page=0&maxResults=50`).then((res) => {
+        Axios.get(`/api/card/search?q=${search}&page=0&maxResults=150`).then((res) => {
             const { data } = res;
             setCards(data);
         });
