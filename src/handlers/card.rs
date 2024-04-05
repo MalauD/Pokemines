@@ -144,7 +144,7 @@ pub async fn pay_booster(
     // Verify that user has enough money
     let user = db.get_user(&user.get_id().unwrap()).await?.unwrap();
     let user_id = user.get_id().unwrap();
-    if user.account_balance < booster.price {
+    if user.account_balance < booster.price.try_into().unwrap() {
         return Err(CardError::InsufficientFunds);
     }
 

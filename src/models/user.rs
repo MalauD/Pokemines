@@ -41,7 +41,7 @@ pub struct User {
     pub promo: Option<Promo>,
     pub admin: bool,
     pub cards: Vec<ObjectId>,
-    pub account_balance: u32,
+    pub account_balance: i32,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -58,7 +58,7 @@ pub struct PublicUser {
     pub promo: Option<Promo>,
     pub admin: bool,
     pub cards: Vec<ObjectId>,
-    pub account_balance: u32,
+    pub account_balance: i32,
 }
 
 impl From<User> for PublicUser {
@@ -90,7 +90,7 @@ pub struct LeaderboardUser {
     pub promo: Option<Promo>,
     pub admin: bool,
     pub cards: Vec<ObjectId>,
-    pub account_balance: u32,
+    pub account_balance: i32,
     pub total_points: u32,
     pub rank: u32,
 }
@@ -131,7 +131,7 @@ impl User {
             promo: req.promo,
             admin: req.admin,
             cards: vec![],
-            account_balance: req.account_balance,
+            account_balance: req.account_balance as i32,
         }
     }
 

@@ -62,7 +62,7 @@ pub async fn transaction_pay(user: User, req: web::Path<String>) -> CardResponse
     match transaction.transaction_type {
         PopulatedTransactionType::Marketplace { price, sender_card } => {
             let receiver_id = user.get_id().unwrap();
-            if price > user.account_balance {
+            if price > user.account_balance.try_into().unwrap() {
                 return Err(CardError::InsufficientFunds);
             }
             db.transfer_card(
